@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>EGUI Event的新方法 - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="断了一下午的网，总算能上了。发现刷github pages用来积累commit很不错.. EGUI的event模块利用Linux内核的evdev来获取用户输入。但是之前的方法需要确定出具体的鼠标和键盘，带来了一个很大的问题，因为有时候确定起来标准很模糊。比如在ArchLinux Host + &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/02/28/egui-event">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonekyx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">EGUI Event的新方法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-28T02:31:00+08:00" pubdate data-updated="true">Feb 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>断了一下午的网，总算能上了。发现刷github pages用来积累commit很不错..</p>
+
+<hr />
+
+<p>EGUI的event模块利用Linux内核的evdev来获取用户输入。但是之前的方法需要确定出具体的鼠标和键盘，带来了一个很大的问题，因为有时候确定起来标准很模糊。比如在ArchLinux Host + VirtualBox + ArchLinux VM的话，鼠标设备有两个，但其中一个由于未知的原因无法获取点击事件，而且一旦从其中一个读取，另一个就不会再提供同样的消息。这样，即使想通过select所有的设备来检测鼠标也很困难。</p>
+
+<p>Linux的evdev是一个统一的输入设备接口，不管是鼠标、键盘还是手柄，消息的格式都是一样的。所以一个很自然的方法就是直接从所有的event设备接收输入。这个想法也是经历过上述的问题才获得的，因为尽管有两个evdev对应同一个设备，一条消息也不会出现两次。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-28T02:31:00+08:00" pubdate data-updated="true">Feb 28<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/02/28/egui-event/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/02/28/egui-event/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/24/rip-audio-cd-from-linux-cli/" title="Previous Post: Rip audio CD">&laquo; Rip audio CD</a>
+      
+      
+        <a class="basic-alignment right" href="/proj-prosp.html" title="Next Post: 毕设项目预期">毕设项目预期 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/04/egui-modules/">EGUI模块结构</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: | My Octopress Blog]]></title>
+  <link href="http://stonekyx.github.io/blog/categories//atom.xml" rel="self"/>
+  <link href="http://stonekyx.github.io/"/>
+  <updated>2014-04-01T23:56:08+08:00</updated>
+  <id>http://stonekyx.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Jekyll From Android!]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/02/14/jekyll-from-android/"/>
+    <updated>2014-02-14T00:00:00+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/02/14/jekyll-from-android</id>
+    <content type="html"><![CDATA[<p>How does it work?</p>
+]]></content>
+  </entry>
+  
+</feed>

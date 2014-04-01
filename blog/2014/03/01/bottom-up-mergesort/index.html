@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Bottom-up Mergesort - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。 其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/03/01/bottom-up-mergesort">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonekyx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Bottom-up Mergesort</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T00:32:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。</p>
+
+<p>其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的，不需要像数组一样开另一个来存结果。但是实现起来也特别复杂。</p>
+
+<p>期间遇到一个问题，经过一定的归并过程之后，链表会变短。</p>
+
+<div>
+  <pre><code class='java'>public void merge(ListNode a, ListNode b, int len) {
+        ListNode bprev = nodeAt(a, len);
+        ListNode bnext = null;
+        for(; b!=null &amp;&amp; len&gt;0; b=bnext,len--) {
+            while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
+                a=a.next;
+                if(a==bprev) return;
+            }
+            bprev.next = b.next;
+            bnext = b.next;
+            b.next = a.next;
+            a.next = b;
+        }
+    }</code></pre>
+</div>
+
+
+<p>这是归并过程，a、b两段是一前一后相连的（即a的最后一个结点后面就是b），每段长度为len。其实为了方便实现，“a”这个参数给的是a段首结点的前面一个，也就是说其实a段有<code>len+1</code>个元素，但b段只有<code>len</code>个。</p>
+
+<p>链表缩短的问题就出在中间那个while循环上。</p>
+
+<div>
+  <pre><code class='java'>while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
+    a=a.next;
+    if(a==bprev) return;
+}</code></pre>
+</div>
+
+
+<p>这个while循环用来找到b结点的插入位置，插入位置就是这个循环结束后的a的后面。</p>
+
+<p>第3行里bprev是一个不变的指针，指向b段的第一个元素前面的结点。利用它可以方便地将b删除。当b段全部删除时，bprev就成了合并后序列的最后一个元素。但是一旦中途a走到了bprev上，就说明a段已经结束了，b段已经不需要再移动。</p>
+
+<p>之前错误的写法是将第2、3行对调，if写在前面。这样的话在这一轮循环结束后，a还可能停留在bprev上，而不再有机会return。此时再判断<code>a.next.val&lt;b.val</code>为真（因为<code>a.next</code>此时就等于<code>b</code>），就退出while了。</p>
+
+<p>while下面就会将b插入到a的后面，而b已经在a的后面。事实上，此后的第一次操作没有任何影响，链表保持不变。问题是此时b后面的值跟b一样，那么它仍然能跳过while循环（因为当b变成它时，<code>a.next.val==b.val</code>），再次执行移动操作。此时bprev已经不正确了，它仍然跟a重合，而且在b的前面两个位置。这会导致在操作中将b前面的结点（也就是bprev后面的结点）删除。再往后，如果还有连续相等的结点，这种情况还会继续发生。</p>
+
+<hr />
+
+<p>这个问题花费了一个下午的时间。如果是在面试中的话，早已经无望了吧。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T00:32:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/03/01/bottom-up-mergesort/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/03/01/bottom-up-mergesort/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/proj-prosp.html" title="Previous Post: 毕设项目预期">&laquo; 毕设项目预期</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/03/01/heap/" title="Next Post: Heapによくあった問題">Heapによくあった問題 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/04/egui-modules/">EGUI模块结构</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

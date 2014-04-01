@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>button.c</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="css/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="egui-button-callback.html">
+                button.c
+              </a>
+            
+              
+              <a class="source" href="egui-client-message-dispatching.html">
+                exec.c
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>button.c</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>这部分代码摘自widget/button/button.c，是按钮控件的默认callback。它一般被application/exec.c里的过程调用。那边的代码可以通过右上角的Jump跳转过去。</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>这次要实现的事件处理功能，是在widget.c里写，这里改动不会太大。而且那边的写法也会跟这个不一样，因为那边要处理所有存在的消息，当然不能像这样用switch枚举。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+si_t button_default_callback(addr_t self, addr_t msg)
+{
+    <span class="hljs-keyword">struct</span> button * b = self;
+    <span class="hljs-keyword">union</span> message * m = msg;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>union message的base.type成员保存了消息的类型。按钮控件只处理了几种必要的消息，而没有考虑鼠标点击之类的事件，所以现在用户都需要自己重新实现一个callback函数来处理。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">switch</span>(m-&gt;base.type) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>重绘事件。由于某种原因，这个控件所在位置的图形被扰乱了，需要重新绘制时出现的消息。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_WIDGET_REPAINT:
+            button_default_widget_repaint(b, m);
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>申请服务器将图像显示出来。这个消息单独出现的情况好像比较少，一般都是重绘之后才需要申请服务器显示，而这个是上面的消息附带处理的。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_WIDGET_SHOW:
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>鼠标按下。按下时按钮会改变外观，比如颜色变深，所以也需要重新显示。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_MOUSE_PRESS:
+            button_default_mouse_press(b, m);
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>跟上面一样，松开时外观要恢复到按下前的样子。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_MOUSE_RELEASE:
+            button_default_mouse_release(b, m);
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">break</span>;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

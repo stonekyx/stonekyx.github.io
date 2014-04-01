@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Jekyll + Bootstrap - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="Jekyll原来的页面效果太少，而且也想练习一下Bootstrap，所以想办法在Jekyll里用上Bootstrap了。 折腾了这么久，最后发现这个早就被实现过了。Jekyll-Bootstrap貌似就是一个很完整的实现。不过既然都已经折腾出来了，就这样吧。 首先， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/03/15/jekyll-and-bootstrap">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonekyx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Jekyll + Bootstrap</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-15T22:41:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Jekyll原来的页面效果太少，而且也想练习一下Bootstrap，所以想办法在Jekyll里用上Bootstrap了。</p>
+
+<p>折腾了这么久，最后发现这个早就被实现过了。<a href="http://jekyllbootstrap.com/">Jekyll-Bootstrap</a>貌似就是一个很完整的实现。不过既然都已经折腾出来了，就这样吧。</p>
+
+<p>首先，由于担心Bootstrap里的HTML class跟Jekyll用到的重名，所以将Jekyll所有的class都加上了<code>jekyll-</code>这样的前缀。这样分辨起来也容易一点。不过这里还是用没有前缀的版本来记录。</p>
+
+<p>将文件都复制过来以后，首先要折腾的就是导航栏了。感觉导航栏的HTML结构实在是太复杂，而且很容易就被已有的HTML class影响，还不知道影响来自哪里。</p>
+
+<ul>
+<li><p>这次首先遇上的问题是标题按钮跟其他导航按钮不对齐。原因是Jekyll原来用<code>&lt;h1&gt;</code>当标题，放到Bootstrap里之后，它跟一个<code>&lt;ul&gt;</code>当兄弟，由于h1有更多的margin，就出问题了。把h1换成div。</p></li>
+<li><p>然后是title这个HTML类的问题。它混在导航栏里之后，会让所在的那个div有特别多的<code>margin-bottom</code>。这样就使得导航栏下面多出一块空白，非常不好看。把title这个类从标签里去掉。</p></li>
+<li><p>导航栏那个大div所在的位置也很重要，它的宽度会受到父div的影响。Jekyll里的header原来就是放在一个有site类的容器里，而site是固定宽度的，这就让导航栏没法随着窗口的大小而伸缩了。其实把Bootstrap的container类加在site类后面就行了，然后把Jekyll的main.css里site的<code>width</code>属性名改成<code>max-width</code>。</p></li>
+<li><p>怎么感觉Blog Posts这几个字变大了..去看一下。</p></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-15T22:41:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/03/15/jekyll-and-bootstrap/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/03/15/jekyll-and-bootstrap/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/08/mono/" title="Previous Post: Linux + Mono + WinForm == Windows + VC# ?">&laquo; Linux + Mono + WinForm == Windows + VC# ?</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/04/egui-modules/">EGUI模块结构</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

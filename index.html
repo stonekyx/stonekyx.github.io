@@ -9,7 +9,7 @@
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content=" Blog Archives Recent Posts ">
+  <meta name="description" content="Jekyll原来的页面效果太少，而且也想练习一下Bootstrap，所以想办法在Jekyll里用上Bootstrap了。 折腾了这么久，最后发现这个早就被实现过了。Jekyll-Bootstrap貌似就是一个很完整的实现。不过既然都已经折腾出来了，就这样吧。 首先， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,7 +66,1569 @@
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-15T22:41:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Jekyll原来的页面效果太少，而且也想练习一下Bootstrap，所以想办法在Jekyll里用上Bootstrap了。</p>
+
+<p>折腾了这么久，最后发现这个早就被实现过了。<a href="http://jekyllbootstrap.com/">Jekyll-Bootstrap</a>貌似就是一个很完整的实现。不过既然都已经折腾出来了，就这样吧。</p>
+
+<p>首先，由于担心Bootstrap里的HTML class跟Jekyll用到的重名，所以将Jekyll所有的class都加上了<code>jekyll-</code>这样的前缀。这样分辨起来也容易一点。不过这里还是用没有前缀的版本来记录。</p>
+
+<p>将文件都复制过来以后，首先要折腾的就是导航栏了。感觉导航栏的HTML结构实在是太复杂，而且很容易就被已有的HTML class影响，还不知道影响来自哪里。</p>
+
+<ul>
+<li><p>这次首先遇上的问题是标题按钮跟其他导航按钮不对齐。原因是Jekyll原来用<code>&lt;h1&gt;</code>当标题，放到Bootstrap里之后，它跟一个<code>&lt;ul&gt;</code>当兄弟，由于h1有更多的margin，就出问题了。把h1换成div。</p></li>
+<li><p>然后是title这个HTML类的问题。它混在导航栏里之后，会让所在的那个div有特别多的<code>margin-bottom</code>。这样就使得导航栏下面多出一块空白，非常不好看。把title这个类从标签里去掉。</p></li>
+<li><p>导航栏那个大div所在的位置也很重要，它的宽度会受到父div的影响。Jekyll里的header原来就是放在一个有site类的容器里，而site是固定宽度的，这就让导航栏没法随着窗口的大小而伸缩了。其实把Bootstrap的container类加在site类后面就行了，然后把Jekyll的main.css里site的<code>width</code>属性名改成<code>max-width</code>。</p></li>
+<li><p>怎么感觉Blog Posts这几个字变大了..去看一下。</p></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-08T23:46:00+08:00" pubdate data-updated="true">Mar 8<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>下周一就要C#上机了，但是实在不想在笔记本上安装VS。所以先尽量找了一下Linux下做C#开发的方法，好在很简单。</p>
+
+<p>需要的工具有Monodevelop(IDE)，<a href="https://github.com/mono/mwf-designer.git">WinForm</a>（是个独立的工具，创建VS窗体）。Mono的编译命令是mcs，执行二进制文件有时会加上mono（像解释器一样），但这个好像不一定需要。所以实际上创建好项目以后用vim也是没问题的。</p>
+
+<p>在Monodevelop里创建的窗体项目一般是GTK的，虽然没有尝试过在GTK项目里添加WinForm窗体，但我想这样应该也没什么问题。总之创建了一个<strong>空项目</strong>，然后在WinForm里新建了一个Form1.cs，画了个窗体，保存。导入到Monodevelop里之后发现无法编译，原因是一些assembly没有引用。在Project菜单里有个Edit references，打开后选择System等相关的引用即可。</p>
+
+<p>运行的时候还有个问题，中文默认是无法显示的。我用的系统locale是<code>en_US.UTF-8</code>，虽然同是UTF-8，但如果不设成<code>zh_CN.UTF-8</code>就不行。这个也许跟VS项目的配置文件有关系，因为写了中文的这个项目是用VS创建的。但也可能是类似于gettext的问题，设置了中文文本，没有设置英文文本，不然同是UTF-8应该是兼容的才对。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><!DOCTYPE html>
+
+<html>
+<head>
+  <title>exec.c</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="css/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="egui-button-callback.html">
+                button.c
+              </a>
+            
+              
+              <a class="source" href="egui-client-message-dispatching.html">
+                exec.c
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>exec.c</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>这部分代码摘自application/exec.c，是用户程序接收到服务器的消息时首先进行的过程。这里只摘取了处理鼠标按下的代码。调用顺序是从下往上，监听函数收到消息后分析消息类型，然后首先传给handle_mouse_press。请从那里开始读。</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>这是检查并处理具体控件的函数。如果控件位于鼠标下方，那么它就是要找的控件，于是处理并返回它的指针；不是的话就返回NULL。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> widget* do_dispatch_mouse_event_and_returns(
+        <span class="hljs-keyword">struct</span> widget* w, <span class="hljs-keyword">union</span> message* msg)
+{
+    <span class="hljs-keyword">struct</span> rectangle area;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>前面这几行是为了获得这个控件在屏幕上的坐标。除了窗口以外的控件都只保存与父控件的相对坐标，所以需要计算一下绝对坐标。因为鼠标位置是绝对坐标的。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(w-&gt;is_window == <span class="hljs-number">1</span>) {
+        area = w-&gt;area;
+    } <span class="hljs-keyword">else</span> {
+        widget_absolute_area(w, &amp;area);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>这之后就只要判断一个点是否在矩形内部即可。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(msg-&gt;mouse.cursor_position.x &gt;= area.x 
+        &amp;&amp; msg-&gt;mouse.cursor_position.x &lt;= area.x + area.width - <span class="hljs-number">1</span> 
+        &amp;&amp; msg-&gt;mouse.cursor_position.y &gt;= area.y 
+        &amp;&amp; msg-&gt;mouse.cursor_position.y &lt;= area.y + area.height - <span class="hljs-number">1</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>这个控件就在鼠标下方，所以将消息传给它并返回。这个callback就是平常见到的控件里那个callback指针。如果用户程序改动了它，那么用户的函数就会被调用。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(w-&gt;callback != NULL) {
+            w-&gt;callback(w, msg);
+        }
+        application_update_keybd_focus(w);
+        <span class="hljs-keyword">return</span> w; 
+    }
+    <span class="hljs-keyword">return</span> NULL;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>这个函数名字好长..而且单词还拼错了。它的作用是判断每个控件是否处于鼠标的下方。它需要两个参数，一个是函数指针，指向要对找到的控件进行处理的函数；另一个是事件消息。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> widget* application_widgets_for_each_decreament(</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>第一个参数的类型应该这样读：do_for_each_widget是个指针，指向函数，函数接收两个参数并返回<code>struct widget*</code>。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">struct</span> widget* (*do_for_each_widget)(
+            <span class="hljs-keyword">struct</span> widget*, <span class="hljs-keyword">union</span> message*),
+        <span class="hljs-keyword">union</span> message* msg)
+{
+    <span class="hljs-keyword">int</span> n, i;
+    <span class="hljs-keyword">struct</span> object *tree, *node;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>global_application保存整个用户程序的信息，它的window_vector成员包含所有窗口的指针（没记错的话）。于是n应该就是窗口的个数。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    n = vector_size(&amp;(global_application.window_vector));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>循环每个窗口。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span>(i = n - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; -- i) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>取得窗口的指针。实际上它是一棵树，树的节点是窗口里的控件。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        tree = vector_at(&amp;(global_application.window_vector), i);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>在这棵控件树里，左节点是兄弟，右节点是真正的子节点，以此来用二叉树表示一个多叉树。不过实际的规则比这个还复杂，将来再说。node应该能理解成控件树的第一个节点。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        node = tree-&gt;rchild;
+        <span class="hljs-keyword">while</span>(node != NULL) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>有控件的话就继续，将消息传递给控件树的节点。这次调用里收到的处理函数是do_dispatch_mouse_event_and_returns（见下面的handle_mouse_press）。它如果发现这个控件是要找的控件，就会返回它的指针，否则返回NULL。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>(do_for_each_widget(WIDGET_POINTER(node), msg)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>如果找到了那个控件，处理完之后就直接返回。这个不是就继续循环控件树。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> WIDGET_POINTER(node);
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>这个object_tree_iterator_decrement函数可以实现非递归地遍历这棵树，也就是返回node之后的下一个应该遍历的节点。在for循环里就相当于<code>i++</code>的作用。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            node = object_tree_iterator_decrement(tree, node);
+        }
+    }
+    <span class="hljs-keyword">return</span> NULL;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>处理鼠标按下的事件。接收到监听函数传来的事件消息之后，它需要通过某种机制将消息发给合适的控件。对于鼠标按下这个事件，应该接收的控件是鼠标下方的那个。这就交给application_widgets_for_each_decreament处理了。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> si_t handle_mouse_press (<span class="hljs-keyword">union</span> message * msg)
+{
+    application_widgets_for_each_decreament(
+            do_dispatch_mouse_event_and_returns, msg);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><!DOCTYPE html>
+
+<html>
+<head>
+  <title>button.c</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="css/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="egui-button-callback.html">
+                button.c
+              </a>
+            
+              
+              <a class="source" href="egui-client-message-dispatching.html">
+                exec.c
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>button.c</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>这部分代码摘自widget/button/button.c，是按钮控件的默认callback。它一般被application/exec.c里的过程调用。那边的代码可以通过右上角的Jump跳转过去。</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>这次要实现的事件处理功能，是在widget.c里写，这里改动不会太大。而且那边的写法也会跟这个不一样，因为那边要处理所有存在的消息，当然不能像这样用switch枚举。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+si_t button_default_callback(addr_t self, addr_t msg)
+{
+    <span class="hljs-keyword">struct</span> button * b = self;
+    <span class="hljs-keyword">union</span> message * m = msg;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>union message的base.type成员保存了消息的类型。按钮控件只处理了几种必要的消息，而没有考虑鼠标点击之类的事件，所以现在用户都需要自己重新实现一个callback函数来处理。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">switch</span>(m-&gt;base.type) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>重绘事件。由于某种原因，这个控件所在位置的图形被扰乱了，需要重新绘制时出现的消息。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_WIDGET_REPAINT:
+            button_default_widget_repaint(b, m);
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>申请服务器将图像显示出来。这个消息单独出现的情况好像比较少，一般都是重绘之后才需要申请服务器显示，而这个是上面的消息附带处理的。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_WIDGET_SHOW:
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>鼠标按下。按下时按钮会改变外观，比如颜色变深，所以也需要重新显示。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_MOUSE_PRESS:
+            button_default_mouse_press(b, m);
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>跟上面一样，松开时外观要恢复到按下前的样子。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_MOUSE_RELEASE:
+            button_default_mouse_release(b, m);
+            button_default_widget_show(b, m);
+            <span class="hljs-keyword">break</span>;
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">break</span>;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/04/egui-modules/">EGUI模块结构</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-04T22:17:00+08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="mxgraph" style="position:relative;left:50%;overflow:hidden;width:592px;height:335px;margin-left:-296px;"><div style="width:1px;height:1px;overflow:hidden;">7Vtbj+o2EP41+9iKkHDZx7P00L5UqrQPbZ9WXmKCVSdGSVjY8+uPTWaCL4HlEpxIBQmJjInj+fx5/M0YnsJZuvs9J+vVnyKm/Gk4SHIWP4W/PQ2HgXwrw4bFtDBMpRC8ZGvTuBBZRhelYVsKbna2Jgl1DK8Lwl3r3ywuV2ANxs+Hhj8oS1bwnOlwXDUU5Sf2EdMl2fDyl71JtqnmlGBfg8qwG0DXEfT8CYYpdLgmmTGkH0KkhiGnBfthDnvJYFjwkHeRxzQ3TJxl/+m4hd/lFORCyBvVp3Q3o1xNA05Cddv8SGsNV04z49HHbgA4PgjfwNC3LIvF9i0lmYQ2d8CUt8uJlhcv2xUr6euaLFTLVlJG2paM85ngovIxnMnXfO6OCYb5QfOS7mznJf+oSGmZf6ppgdZngOuzusbLrcaJCGwrjQ7hqLIRgDipez5gIj8ALM0QRQ5EMX3fJBchczsC4chEYDr5FXzTMJjcCQLoQoOAfihXbAi8UsICpL7W8ECa6HggTW7BA0KChkdBczn0N87ezwDldudrLzpwfuI4n6j9olMyhGF3eEwdPBYiTb3QIHiGlQluDz26Hbhbx4yzfVQYFFIhOAAUW5Zykt0rQEZ2PMCopWHRCEYwaCFCgmjQwCDrNWcLUjKRXcUFhPd8Mpj++6QC9GGoiDihV20Q87mKCu0A0h0iSF8tKOwXx9U7xOXeW5LJo/ehuz+6akny4xUuRV6uRCIywr8frC90x8p/ZOtACp3q6l91pT5nckBak7qs2o7iVohNvof3sFZLkiuKGgxWozoJri44kV5mMAFjTrlc+x9mPtAEKjzjL8H2oROjF/aDt1QOwLd0QY832qTHGys3nRu/5TlRDuHX1uoLRcOAoN+RudOAqjw6iujU1+WH6vEHNtUQn0cwV4P0nWDAgAfB2iFYndbch2CRG79vIthEZ1hgMkzqFI1iDRl8E8UwYP2/OXbNzLq5LCxXbWrlFiuheCGcJaros5BToco2L2r3lZqOf4OGlMXxfqbb2LCt/TocNiT4WDXSZwttN9U43CIHMqxrWIIJJFhd4BK4yd2mZHwfxnwmN6GV74e4QDQMwmkDCGi7CYSwIcNVev0aHYuAXpvWYKLvQ8Q3VP5ISd6KMt8syo2s9/pCoDsI3GhpdHN/3+2o6NF3N4uRRxpLlrxJl2S9zw8A9Qr2DwA+qi0RVAmdZhFUCaRTIgiQM0QQzJAhgmDRPoT2MaEdDiCeWwM8Oo6xuQFb3789mXNjTM9oBpQyaAYYPmh2jGbB8DKaWTKvbZYFboX2JMsKmqSSFV/XCyyGfVkvcPkF/NfpBVh0z64jBw2hLa7PZdvQ7gg3r7bZZ5+M2Ofg9rgsgW19/2b6IV49pF/DJto3+tXFawwONmuupV/dccv0G057Rr+W99jjDDT4h5n6FwwEuhn7a28o2ONaVsPvEO6mnK4ILFjreczrpYrYPVq/ZV71ww1NAau2epKrRgwTV0zsY17PmFe3oOTpVOG8BQunao/1eumZghuHMY1st3h+afFoNDZlSNRQNr7bkYJ7RguWjkGJrN+KeQXFPU9wf6/cCVPQOxSgeE7mAxQ3NYeHdwxK6CSR/kDBxEQDBXaPjkGxU5W6FOADFPdYHopMXTPFSlBrb32A4qpFV1Z0whQ7CcYfWvoAxT2zRMHTLSiBFG1dgRI1gNIPVMbWntx0zHU3qlyoyjOxP+anWSxrMmJ7sMSkWFHV6emKyEHB779XZ2bn5V5NGh3G25tyXTS2ynWD+s8ql6r2kdWV01F7Kh5/gKavjn4E0sgSZwEOtf3VIS8Pfz6rQDz8GTD8/hM=</div></div>
+
+
+<script type="text/javascript" src="https://www.draw.io/embed.js"></script>
+
+
+<p>用数字标出了模块之间的依赖关系。
+Client side是用户端模块的集合，这三个模块对外的依赖关系就统一表示了，另外内部依赖关系也很紧密。除了<code>client_lib</code>以外基本上不能完全独立。<code>utils</code>也是，它们对外在被依赖上地位和机会基本一样，也就是说别的模块只要依赖了utils中的任意一个，那么依赖其他几个也是很自然的（这不是约束条件，只是经常出现的情况）。</p>
+
+<ol>
+<li><code>event</code>依赖<code>comm</code>，很明显的一个原因就是<code>event</code>里要产生基本的消息。消息类型是在<code>comm</code>里定义的。</li>
+<li><code>server_lib</code>依赖<code>comm</code>，这个更显然了，<code>server_lib</code>里面都是对<code>comm</code>里定义的消息的处理，比如针对不同的消息类型，调用不同的服务器端函数进行操作。</li>
+<li>Client side依赖<code>comm</code>，因为客户端要跟服务器通信，也是要靠消息的。<code>client_lib</code>就跟<code>server_lib</code>基本上一样，也是针对各种消息的处理，所以也是大量地依赖<code>comm</code>。</li>
+<li><code>comm</code>里有些处理需要用到消息队列，这时就会对<code>data_structures</code>产生依赖。</li>
+<li><code>graph</code>在绘制图形的时候，至少也需要用到<code>color</code>里定义的颜色结构体和透明处理函数。</li>
+<li>Client side里<code>widget</code>也经常用到队列之类的结构（<code>data_structures</code>），以及被客户端广泛需要的<code>color</code>。</li>
+<li><code>data_structures</code>里有鼠标指针结构，它会用到<code>color</code>，因为鼠标是彩色的。如果把<code>utils</code>看作一个模块的话，这就变成内部依赖了。</li>
+<li><code>config_parser</code>用来从统一格式的配置文件中读取参数。来自<code>data_structures</code>的vector被用来存储读入的配置项。</li>
+<li><code>application</code>会在接收到消息的时候向合适的<code>widget</code>转发，转发的方式就是通过<code>widget</code>的callback函数。</li>
+<li><code>application</code>的很多操作需要跟服务器通信。客户端跟服务器通信的方式就是通过<code>client_lib</code>里的函数。</li>
+<li>原因跟上面类似，<code>widget</code>要控制控件的绘制，而它本身没有绘图的权限，所以需要通过<code>client_lib</code>向服务器发出请求。</li>
+</ol>
+
+
+<p>总的来说，<code>utils</code>里的模块被依赖的几率应该是最高的，同时也不太依赖别的模块。</p>
+
+<p>另外还有两个特别的、用椭圆表示的模块，它们在编译后生成可执行文件，而不是库文件。<code>debug</code>里的代码生成若干客户端程序，<code>window_manager</code>生成一个大的服务器程序。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/02/flip-egui/">Flip Egui</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-02T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><!DOCTYPE html>
+
+<html>
+<head>
+  <title>flip.c</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="css/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>flip.c</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>这个程序简单地实现了本网站上演示的flip游戏，游戏中的灰色方格在这个程序里用按钮来表示，每个方格就是一个按钮。所以我们需要申请<code>N*M</code>个按钮，并将它们排成矩阵的形状，然后为每一个按钮设置callback函数，使得它们在被按下时自动切换颜色。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-preprocessor">#include "application.h"</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>结构体flip_button_data用于保存每个按钮的位置信息，这样才能在callback函数里获知当前被按下的是哪个位置的按钮。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">struct</span> flip_button_data {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>x和y是当前按钮的坐标。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">int</span> x, y;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>mx和my是按钮矩阵的长和宽。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">int</span> mx, my;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>map成员是一个由<code>struct button *</code>组成的二维数组，所以定义的时候要写三个<code>*</code>。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">struct</span> button ***<span class="hljs-built_in">map</span>;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>定义两种颜色，按钮最开始是其中一种，按下之后换成另一种，再按一次又换回来。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">struct</span> color dark = {.r=<span class="hljs-number">100</span>, .g=<span class="hljs-number">100</span>, .b=<span class="hljs-number">100</span>, .a=<span class="hljs-number">0</span>},
+             light = {.r=<span class="hljs-number">200</span>, .g=<span class="hljs-number">200</span>, .b=<span class="hljs-number">200</span>, .a=<span class="hljs-number">0</span>};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p><code>flip_color(x)</code>翻转x这一个按钮的颜色。这个函数在一个按钮被按下时要被调用5次，因为一共有5个按钮需要切换颜色。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> flip_color(<span class="hljs-keyword">struct</span> button *x)
+{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>如果当前的背景色是dark的话，就涂成light。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(x-&gt;back_color.r==dark.r &amp;&amp;
+            x-&gt;back_color.g==dark.g &amp;&amp;
+            x-&gt;back_color.b==dark.b &amp;&amp;
+            x-&gt;back_color.a==dark.a)
+        button_set_color(x, NULL, &amp;light);
+    <span class="hljs-keyword">else</span>
+        button_set_color(x, NULL, &amp;dark);
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>check_range的功能很简单，检查<code>(x,y)</code>坐标是否在长为mx、宽为my的矩阵里。可以用它来确定一个坐标上是否存在按钮（即坐标是否超出了按钮矩阵的边界）。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> check_range(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y, <span class="hljs-keyword">int</span> mx, <span class="hljs-keyword">int</span> my)
+{
+    <span class="hljs-keyword">return</span> x&gt;=<span class="hljs-number">0</span> &amp;&amp; y&gt;=<span class="hljs-number">0</span> &amp;&amp; x&lt;mx &amp;&amp; y&lt;my;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>flip函数通过调用<code>flip_color()</code>来为指定的5个按钮切换颜色。在此之前，<code>flip()</code>函数还需要检查要切换颜色的按钮是否存在，即它是否超出了边界。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> flip(<span class="hljs-keyword">struct</span> button *self)
+{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>dx和dy是一个按钮周围的四个按钮相对于它本身的坐标位移。<code>(x,y)</code>坐标的周围四个坐标就是<code>(x+dx[i],y+dy[i])</code>，其中i的值从0~3。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> dx[<span class="hljs-number">4</span>]={-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>}, dy[<span class="hljs-number">4</span>]={<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>获取申请按钮时保存的数据。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">struct</span> flip_button_data *data = self-&gt;custom_data;
+    <span class="hljs-keyword">int</span> i;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>循环4个方向。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">4</span>; i++) {
+        <span class="hljs-keyword">struct</span> button *x;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>如果该方向的按钮存在，那么通过data里保存的map数组来获取那个按钮，由x指向它。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(!check_range(data-&gt;x+dx[i], data-&gt;y+dy[i], data-&gt;mx, data-&gt;my))
+            <span class="hljs-keyword">continue</span>;
+        x = data-&gt;<span class="hljs-built_in">map</span>[data-&gt;x+dx[i]][data-&gt;y+dy[i]];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>切换该按钮的颜色。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        flip_color(x);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>刷新该按钮，在屏幕上显示新的颜色。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        button_repaint(x);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>最后是被按下的这个按钮自己。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    flip_color(self);
+    button_repaint(self);
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>flip_button_callback用来代替button控件原有的callback函数，并控制鼠标按下时要执行的操作。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> si_t flip_button_callback(<span class="hljs-keyword">void</span> *s, <span class="hljs-keyword">void</span> *m)
+{
+    <span class="hljs-keyword">struct</span> button *self = s;
+    <span class="hljs-keyword">union</span> message *msg = m;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>首先调用原来的默认callback函数，因为这里面有很多内部过程，不能随便跳过。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    button_default_callback(s, m);
+    <span class="hljs-keyword">switch</span>(msg-&gt;base.type) {
+        <span class="hljs-keyword">case</span> MESSAGE_TYPE_MOUSE_SINGLE_CLICK:</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>当事件类型为鼠标单击时，我们在这个按钮上调用<code>flip()</code>。flip函数的说明见上文。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            flip(self);
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">break</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>初始化按钮矩阵。其实就是申请十几个按钮，并将它们的坐标设置好，排成一个矩阵的样子。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> add_buttons(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y, <span class="hljs-keyword">struct</span> window *w)
+{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>b是一个二维数组。数组的每个元素是一个<code>struct button *</code>。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">struct</span> button ***b;
+    <span class="hljs-keyword">int</span> i;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>先申请第一维。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    b = <span class="hljs-built_in">calloc</span>(x, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">struct</span> button **));
+    <span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>; i&lt;x; i++) {
+        <span class="hljs-keyword">int</span> j;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>再在循环内部申请第二维。第一维的每个元素都是一个第二维的数组。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        b[i] = <span class="hljs-built_in">calloc</span>(y, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">struct</span> button *));
+        <span class="hljs-keyword">for</span>(j=<span class="hljs-number">0</span>; j&lt;y; j++) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>申请一个用于存放坐标信息的结构体。这里必须用指针和malloc（或者calloc），是因为这个指针必须在整个程序内可访问。如果直接在这里定义结构体（而不是指针）的话，当这个函数结束，它就会变得无法再访问。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">struct</span> flip_button_data *data =
+                <span class="hljs-built_in">calloc</span>(<span class="hljs-number">1</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">struct</span> flip_button_data));
+            data-&gt;x = i;
+            data-&gt;y = j;
+            data-&gt;mx = x;
+            data-&gt;my = y;
+            data-&gt;<span class="hljs-built_in">map</span> = b;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>申请一个按钮。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            b[i][j] = button_init(<span class="hljs-string">""</span>);
+            b[i][j]-&gt;callback = flip_button_callback;
+            b[i][j]-&gt;custom_data = data;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>设置颜色、边界，并将它添加到窗口中。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            button_set_color(b[i][j], NULL, &amp;light);
+            button_set_bounds(b[i][j], <span class="hljs-number">30</span>*i, <span class="hljs-number">30</span>*j, <span class="hljs-number">30</span>, <span class="hljs-number">30</span>);
+            object_attach_child(OBJECT_POINTER(w), OBJECT_POINTER(b[i][j]));
+        }
+    }
+}
+
+<span class="hljs-keyword">int</span> main()
+{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>主函数里的这些过程基本上就和其他客户端程序一样。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    si_t video_access_mode = VIDEO_ACCESS_MODE_BUFFER;
+	si_t app_type = APPLICATION_TYPE_NORMAL;
+    <span class="hljs-keyword">struct</span> window *w;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>应用程序初始化。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    application_init(video_access_mode, app_type, <span class="hljs-string">"Flip"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>申请窗口。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    w = window_init(<span class="hljs-string">"Flip"</span>);
+    window_set_bounds(w, <span class="hljs-number">100</span>,<span class="hljs-number">100</span>,<span class="hljs-number">500</span>,<span class="hljs-number">500</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>调用刚才的按钮初始化函数，申请若干的按钮，并添加到窗口中。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    add_buttons(<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,w);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>下面又和基本流程一样了，将窗口添加到应用程序里，并设置主窗口。最后运行。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    application_add_window(NULL, w);
+    application_set_main_window(w);
+
+    application_exec();
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/median/">Median 中位数</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T19:23:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在Leetcode上遇到了百度质量部电话面试的题，求两个有序数组的中位数。时间复杂度要求是<code>O(log(n+m))</code>，虽然过了之后感觉复杂度是<code>O(logn+logm)</code>。</p>
+
+<p>这个题的关键是用常数时间判断两个数组中任意元素是否为中位数，以及不是的话，中位数在它的哪一边。但更重要的是另一个问题。</p>
+
+<div>
+  <pre><code class='java'>Integer left = findLeft(A,B);
+    if(left==null) left = findLeft(B,A);
+    Integer right = findRight(A,B);
+    if(right==null) right = findRight(B,A);
+    return (left+right)/2.0;</code></pre>
+</div>
+
+
+<p>主函数中的过程。关键问题是findLeft和findRight两个函数。之前求中位数往往会考虑个数为奇数和偶数的情况，但是如果考虑中位数总是有两个，只是它们可能重合，就能统一起这两种情况。这两个中位数在有序数列中，<strong>一个是前面有<code>(tot_length)/2</code>个元素，另一个是后面有这么多个元素。</strong>对于奇数个元素的情况，它们是重合的，<code>(a+b)/2=a=b</code>；对于偶数个情况，它们正好相邻，而答案也是<code>(a+b)/2</code>。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/tree-traversal-iterative/">Non-recursive Binary-tree Traversal</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T05:09:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>非递归地后序遍历二叉树。</p>
+
+<div>
+  <pre><code class='java'>TreeNode it = root;
+    do {
+        while(it.left!=null) {
+            stack.push(it);
+            it=it.left;
+        }
+        if(it.right!=null) {
+            stack.push(it);
+            it=it.right;
+            continue;
+        }
+        while(stack.size()&gt;0) {
+            ans.add(it.val);
+            TreeNode par = stack.pop();
+            if(par.left == it &amp;&amp; par.right != null) {
+                stack.push(par);
+                it=par.right;
+                break;
+            } else {
+                it=par;
+                continue;
+            }
+        }
+    } while(it!=root);
+    ans.add(it.val);
+    return ans;</code></pre>
+</div>
+
+
+<p>一次大循环以回溯为结束。简单来说，就是尽量向左走，如果回溯过程中发现能向右走，那么马上停止回溯，向右走一步，继续遍历右子树。所以，整个遍历过程中是<strong>不断遍历右子树</strong>，而这些右子树<strong>以左结点的链为轴排布</strong>。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/heap/">Heapによくあった問題</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T04:30:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在写堆的时候，经常出现无法通过堆排序检查的现象。其实解决问题之后发现，印象中大部分堆的问题都是这同一个。</p>
+
+<div>
+  <pre><code class='java'>public void sink(int x) {
+    int i=x, j, kfreq=freq[x], kkey=key[x];
+    while(i*2&lt;=tot) {
+        j=i*2;
+        if(j+1&lt;=tot &amp;&amp; freq[j+1]&lt;freq[j]) j++;
+        if(freq[j]&lt;kfreq) {
+            freq[i]=freq[j];
+            key[i]=key[j];
+            keymap.put(key[i],i);
+            i=j;
+        } else break;
+    }
+    freq[i]=kfreq;
+    key[i]=kkey;
+    keymap.put(key[i], i);
+}</code></pre>
+</div>
+
+
+<p>堆的下沉操作。这个堆里关键字是<code>freq[]</code>，另有一个附加值<code>key[]</code>。<code>keymap</code>是一个HashMap，记录对应key在堆中的位置。这是其他部分程序要用到的，这里不管。</p>
+
+<p>前面说到的问题就是，很容易把第6行的kfreq写成<code>freq[i]</code>。写的时候总觉得<code>freq[i]</code>和<code>freq[j]</code>比较很正常，因为下面也是它们之间在赋值。<strong>但是下沉操作中<code>freq[i]</code>的值最开始就被提出去了，到下沉结束才会落到最后的那个i上。</strong>所以这里应该跟提出去的那个k比较，而不是一直在变化的<code>freq[i]</code>。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/bottom-up-mergesort/">Bottom-up Mergesort</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T00:32:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。</p>
+
+<p>其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的，不需要像数组一样开另一个来存结果。但是实现起来也特别复杂。</p>
+
+<p>期间遇到一个问题，经过一定的归并过程之后，链表会变短。</p>
+
+<div>
+  <pre><code class='java'>public void merge(ListNode a, ListNode b, int len) {
+        ListNode bprev = nodeAt(a, len);
+        ListNode bnext = null;
+        for(; b!=null &amp;&amp; len&gt;0; b=bnext,len--) {
+            while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
+                a=a.next;
+                if(a==bprev) return;
+            }
+            bprev.next = b.next;
+            bnext = b.next;
+            b.next = a.next;
+            a.next = b;
+        }
+    }</code></pre>
+</div>
+
+
+<p>这是归并过程，a、b两段是一前一后相连的（即a的最后一个结点后面就是b），每段长度为len。其实为了方便实现，“a”这个参数给的是a段首结点的前面一个，也就是说其实a段有<code>len+1</code>个元素，但b段只有<code>len</code>个。</p>
+
+<p>链表缩短的问题就出在中间那个while循环上。</p>
+
+<div>
+  <pre><code class='java'>while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
+    a=a.next;
+    if(a==bprev) return;
+}</code></pre>
+</div>
+
+
+<p>这个while循环用来找到b结点的插入位置，插入位置就是这个循环结束后的a的后面。</p>
+
+<p>第3行里bprev是一个不变的指针，指向b段的第一个元素前面的结点。利用它可以方便地将b删除。当b段全部删除时，bprev就成了合并后序列的最后一个元素。但是一旦中途a走到了bprev上，就说明a段已经结束了，b段已经不需要再移动。</p>
+
+<p>之前错误的写法是将第2、3行对调，if写在前面。这样的话在这一轮循环结束后，a还可能停留在bprev上，而不再有机会return。此时再判断<code>a.next.val&lt;b.val</code>为真（因为<code>a.next</code>此时就等于<code>b</code>），就退出while了。</p>
+
+<p>while下面就会将b插入到a的后面，而b已经在a的后面。事实上，此后的第一次操作没有任何影响，链表保持不变。问题是此时b后面的值跟b一样，那么它仍然能跳过while循环（因为当b变成它时，<code>a.next.val==b.val</code>），再次执行移动操作。此时bprev已经不正确了，它仍然跟a重合，而且在b的前面两个位置。这会导致在操作中将b前面的结点（也就是bprev后面的结点）删除。再往后，如果还有连续相等的结点，这种情况还会继续发生。</p>
+
+<hr />
+
+<p>这个问题花费了一个下午的时间。如果是在面试中的话，早已经无望了吧。</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -77,6 +1639,26 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/04/egui-modules/">EGUI模块结构</a>
+      </li>
     
   </ul>
 </section>
