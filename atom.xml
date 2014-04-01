@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-04-01T23:56:08+08:00</updated>
+  <updated>2014-04-02T01:00:34+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -63,7 +63,7 @@
   <title>exec.c</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="css/docco.css" />
+  <link rel="stylesheet" media="all" href="http://stonekyx.github.io/css/docco.css" />
 </head>
 <body>
   <div id="container">
@@ -77,12 +77,12 @@
           <div id="jump_page">
             
               
-              <a class="source" href="egui-button-callback.html">
+              <a class="source" href="../egui-button-callback/">
                 button.c
               </a>
             
               
-              <a class="source" href="egui-client-message-dispatching.html">
+              <a class="source" href="../egui-client-message-dispatching/">
                 exec.c
               </a>
             
@@ -374,7 +374,7 @@
   <title>button.c</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="css/docco.css" />
+  <link rel="stylesheet" media="all" href="http://stonekyx.github.io/css/docco.css" />
 </head>
 <body>
   <div id="container">
@@ -388,12 +388,12 @@
           <div id="jump_page">
             
               
-              <a class="source" href="egui-button-callback.html">
+              <a class="source" href="../egui-button-callback/">
                 button.c
               </a>
             
               
-              <a class="source" href="egui-client-message-dispatching.html">
+              <a class="source" href="../egui-client-message-dispatching/">
                 exec.c
               </a>
             
@@ -589,7 +589,7 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <title>flip.c</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="css/docco.css" />
+  <link rel="stylesheet" media="all" href="http://stonekyx.github.io/css/docco.css" />
 </head>
 <body>
   <div id="container">
@@ -1480,7 +1480,7 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <title>event_listener.c</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="css/docco.css" />
+  <link rel="stylesheet" media="all" href="http://stonekyx.github.io/css/docco.css" />
 </head>
 <body>
   <div id="container">
@@ -1703,7 +1703,7 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     <link href="http://stonekyx.github.io/blog/2014/02/22/flip/"/>
     <updated>2014-02-22T20:52:00+08:00</updated>
     <id>http://stonekyx.github.io/blog/2014/02/22/flip</id>
-    <content type="html"><![CDATA[<p><link rel="stylesheet" href="css/flip.css"></p>
+    <content type="html"><![CDATA[<p><link rel="stylesheet" href="http://stonekyx.github.io/css/flip.css"></p>
 
 <p>Flip game是一个小游戏，在二维棋盘上点击任意方格，其相邻方格都会跟它一起改变颜色。游戏目标是将所有方格由白色变成黑色。</p>
 
@@ -1716,16 +1716,16 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
 <div id="gameArea" align="center"></div>
 
 
-<script src="js/vendor/jquery.min.js"></script>
+<script src="http://stonekyx.github.io/js/vendor/jquery.min.js"></script>
 
 
-<script src="js/vendor/underscore-min.js"></script>
+<script src="http://stonekyx.github.io/js/vendor/underscore-min.js"></script>
 
 
-<script src="js/vendor/backbone-min.js"></script>
+<script src="http://stonekyx.github.io/js/vendor/backbone-min.js"></script>
 
 
-<script src="js/flip.bb.js"></script>
+<script src="http://stonekyx.github.io/js/flip.bb.js"></script>
 
 ]]></content>
   </entry>
@@ -1793,7 +1793,7 @@ tree-&gt;parent = tree_real_parent;</code></pre>
   <title>guess.c</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="css/docco.css" />
+  <link rel="stylesheet" media="all" href="http://stonekyx.github.io/css/docco.css" />
 </head>
 <body>
   <div id="container">
@@ -2240,7 +2240,7 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     <id>http://stonekyx.github.io/blog/2014/02/16/curry</id>
     <content type="html"><![CDATA[<p><canvas id='curry-game'></canvas></p>
 
-<script src='js/curry.js'></script>
+<script src='http://stonekyx.github.io/js/curry.js'></script>
 
 ]]></content>
   </entry>
