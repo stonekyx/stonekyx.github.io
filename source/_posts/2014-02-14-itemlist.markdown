@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "Item list app"
+date:   2014-02-14 17:33:00
+categories:
+---
+
+<div id='friend_list'></div>
+<button id='add_friend'>Add friend</button>
+<script src="{{ site.baseurl}}js/vendor/jquery.min.js"></script>
+<script src="{{ site.baseurl}}js/vendor/underscore-min.js"></script>
+<script src="{{ site.baseurl}}js/vendor/backbone-min.js"></script>
+<script src='{{ site.baseurl}}js/itemlist.js'></script>

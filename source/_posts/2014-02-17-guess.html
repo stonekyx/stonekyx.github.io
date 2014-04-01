@@ -1,0 +1,448 @@
+---
+bhtml: true
+---
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>guess.c</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="/css/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>guess.c</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-preprocessor">#include &lt;stdlib.h&gt;</span>
+
+<span class="hljs-preprocessor">#include "application.h"</span>
+<span class="hljs-preprocessor">#include "geometry.h"</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>intv是在窗口布局的时候控件之间的空隙大小。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> ui_t intv = <span class="hljs-number">5</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>窗口和控件的指针，为了方便在submit_callback()函数里访问而定义为全局变量。实际上应该有更好的方法来避免全局变量。
+这些都只是空指针，空间的分配在主函数里进行。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> window *w = NULL;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> button *submit = NULL;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> label *result = NULL;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> text_line *input = NULL;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>开始猜数时随机产生一个数放在answer变量里。没有初始化的时候最好赋一个不可能的值，表示尚未初始化。随机数都大于等于0，所以-1是一个比较好的“不可能值”。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> answer = -<span class="hljs-number">1</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>用户点击submit按钮之后，程序会自动调用这个函数。因为在主函数里替换掉了button控件原来的callback函数指针。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> si_t submit_callback(<span class="hljs-keyword">void</span> *self, <span class="hljs-keyword">void</span> *msg)
+{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>先调用button控件原始的callback函数，以防我们自己的处理函数漏掉了什么内部过程。实际上这样实现是有问题的，因为不管怎样都应该先进行内部过程再执行用户的代码。现在这样实现的button控件就给用户留下了跳过内部过程的机会。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    button_default_callback(self, msg);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>MESSAGE_TYPE_MOUSE_SINGLE_CLICK是鼠标单击的事件。说个题外话，这是在服务器端处理过的结果，服务器端产生这个事件的条件是先鼠标按下（MESSAGE_TYPE_MOUSE_PRESS），再松开（MESSAGE_TYPE_MOUSE_RELEASE）。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (message_get_type(msg) == MESSAGE_TYPE_MOUSE_SINGLE_CLICK) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>text_line_get_buf函数获取用户输入的内容，然后用stdlib.h里的atoi函数将这个字符串转换成整数。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">int</span> num = atoi(text_line_get_buf(input));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>如果answer尚未初始化，就产生一个新的随机数作为这一轮的答案。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(answer == -<span class="hljs-number">1</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>随机数的范围限定在100以内，也就是[0,100)。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            answer = rand()%<span class="hljs-number">100</span>;
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>如果这次猜的数正好就是答案，那么游戏结束，并清空答案，以便下一次重新生成一个随机数。如果不正确，那么按大小给出提示。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(num==answer) {
+            result-&gt;text = <span class="hljs-string">"Right! Next time will start again."</span>;
+            answer = -<span class="hljs-number">1</span>;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(num&gt;answer) {
+            result-&gt;text = <span class="hljs-string">"Too big"</span>;
+        } <span class="hljs-keyword">else</span> {
+            result-&gt;text = <span class="hljs-string">"Too small"</span>;
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>因为前面修改了result控件的内容，所以这里需要重新绘制一次，让新的内容显示出来。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        label_repaint(result);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-keyword">int</span> main()
+{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>应用程序初始化所需的几个常量。基本上所有用户程序都是这样。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    si_t video = VIDEO_ACCESS_MODE_BUFFER;
+    si_t app = APPLICATION_TYPE_NORMAL;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>随机数初始化。每次程序开始执行的时候，用当前的时间作为随即种子。没有这个的话，每次重新执行程序都会产生一样的答案。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    srand(time(NULL));
+
+    application_init(video, app, <span class="hljs-string">"Number Guessing"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>窗口初始化（分配窗口控件）。参数是窗口标题。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    w = window_init(<span class="hljs-string">"Number Guessing"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>如果初始化不成功，可能是服务器有故障或者没有启动。那么我们也退出。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (!w) {
+        application_exit();
+        <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>窗口的大小和位置。这个公式会让窗口定位在屏幕中央。get_screen_width获取屏幕的宽度。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    window_set_bounds(w, (get_screen_width() - <span class="hljs-number">500</span>) / <span class="hljs-number">2</span>,
+                      (get_screen_height() - <span class="hljs-number">400</span>) / <span class="hljs-number">2</span>, <span class="hljs-number">500</span>, <span class="hljs-number">400</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>分配一个文本框。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    input = text_line_init(<span class="hljs-number">100</span>, <span class="hljs-number">0</span>);
+    text_line_set_bounds(input, intv, intv, <span class="hljs-number">400</span>, <span class="hljs-number">30</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>分配一个按钮，按钮上面的文字是”Submit”。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    submit = button_init(<span class="hljs-string">"Submit"</span>);
+    button_set_bounds(submit,
+                      input-&gt;area.x + input-&gt;area.width + intv,
+                      input-&gt;area.y,
+                      w-&gt;area.width - (input-&gt;area.x + input-&gt;area.width +
+                                       intv) - intv, input-&gt;area.height);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>分配一个文本标签，用来显示提示信息。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    result = label_init(<span class="hljs-string">"Please input a number and press Submit"</span>);
+    label_set_bounds(result,
+                     input-&gt;area.x,
+                     input-&gt;area.y + input-&gt;area.height + intv,
+                     submit-&gt;area.x + submit-&gt;area.width - intv,
+                     input-&gt;area.height);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>替换掉按钮的callback函数，让按钮被按下时执行我们自己的函数，而不是控件内部的函数。（当然我们自己的函数还需要再调用那个内部处理函数，像前面写的那样。）</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    submit-&gt;callback = submit_callback;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>将申请的几个控件附加到窗口上。只有这样才能让它们显示出来。（没有窗口的屏幕上怎么会出现控件？）</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    object_attach_child(OBJECT_POINTER(w), OBJECT_POINTER(submit));
+    object_attach_child(OBJECT_POINTER(w), OBJECT_POINTER(result));
+    object_attach_child(OBJECT_POINTER(w), OBJECT_POINTER(input));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>将窗口添加到本应用程序中。这也是一个例行过程，所有程序都这么干。其实这后面到底做了什么我也不记得了。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    application_add_window(NULL, w);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>设置主窗口。如果有多个窗口，那么当主窗口关闭的时候，其他窗口也会自动关闭，应用程序会自动退出。如果只有一个窗口，那么其实设不设置都没有区别。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    application_set_main_window(w);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>开始执行主循环。这个函数不会很快返回，我们的程序会在这里等待用户输入，并在有输入的时候自动跳转到之前设置的callback函数里去处理。直到用户关闭所有的窗口，这个函数才会返回。</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    application_exec();
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

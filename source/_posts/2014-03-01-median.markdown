@@ -1,0 +1,20 @@
+---
+layout: post
+title:  "Median 中位数"
+date:   2014-03-01 11:23:00
+categories:
+---
+
+在Leetcode上遇到了百度质量部电话面试的题，求两个有序数组的中位数。时间复杂度要求是`O(log(n+m))`，虽然过了之后感觉复杂度是`O(logn+logm)`。
+
+这个题的关键是用常数时间判断两个数组中任意元素是否为中位数，以及不是的话，中位数在它的哪一边。但更重要的是另一个问题。
+
+{% highlight java linenos %}
+    Integer left = findLeft(A,B);
+    if(left==null) left = findLeft(B,A);
+    Integer right = findRight(A,B);
+    if(right==null) right = findRight(B,A);
+    return (left+right)/2.0;
+{% endhighlight %}
+
+主函数中的过程。关键问题是findLeft和findRight两个函数。之前求中位数往往会考虑个数为奇数和偶数的情况，但是如果考虑中位数总是有两个，只是它们可能重合，就能统一起这两种情况。这两个中位数在有序数列中，**一个是前面有`(tot_length)/2`个元素，另一个是后面有这么多个元素。**对于奇数个元素的情况，它们是重合的，`(a+b)/2=a=b`；对于偶数个情况，它们正好相邻，而答案也是`(a+b)/2`。

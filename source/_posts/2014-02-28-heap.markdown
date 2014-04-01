@@ -1,0 +1,31 @@
+---
+layout: post
+title:  Heapによくあった問題
+date:   2014-02-28 20:30:00
+categories:
+---
+
+在写堆的时候，经常出现无法通过堆排序检查的现象。其实解决问题之后发现，印象中大部分堆的问题都是这同一个。
+
+{% highlight java linenos %}
+public void sink(int x) {
+    int i=x, j, kfreq=freq[x], kkey=key[x];
+    while(i*2<=tot) {
+        j=i*2;
+        if(j+1<=tot && freq[j+1]<freq[j]) j++;
+        if(freq[j]<kfreq) {
+            freq[i]=freq[j];
+            key[i]=key[j];
+            keymap.put(key[i],i);
+            i=j;
+        } else break;
+    }
+    freq[i]=kfreq;
+    key[i]=kkey;
+    keymap.put(key[i], i);
+}
+{% endhighlight %}
+
+堆的下沉操作。这个堆里关键字是`freq[]`，另有一个附加值`key[]`。`keymap`是一个HashMap，记录对应key在堆中的位置。这是其他部分程序要用到的，这里不管。
+
+前面说到的问题就是，很容易把第6行的kfreq写成`freq[i]`。写的时候总觉得`freq[i]`和`freq[j]`比较很正常，因为下面也是它们之间在赋值。**但是下沉操作中`freq[i]`的值最开始就被提出去了，到下沉结束才会落到最后的那个i上。**所以这里应该跟提出去的那个k比较，而不是一直在变化的`freq[i]`。

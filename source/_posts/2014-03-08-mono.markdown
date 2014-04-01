@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "Linux + Mono + WinForm == Windows + VC# ?"
+date:   2014-03-08 15:46:00
+categories:
+---
+
+下周一就要C#上机了，但是实在不想在笔记本上安装VS。所以先尽量找了一下Linux下做C#开发的方法，好在很简单。
+
+需要的工具有Monodevelop\(IDE\)，[WinForm](https://github.com/mono/mwf-designer.git)（是个独立的工具，创建VS窗体）。Mono的编译命令是mcs，执行二进制文件有时会加上mono（像解释器一样），但这个好像不一定需要。所以实际上创建好项目以后用vim也是没问题的。
+
+在Monodevelop里创建的窗体项目一般是GTK的，虽然没有尝试过在GTK项目里添加WinForm窗体，但我想这样应该也没什么问题。总之创建了一个**空项目**，然后在WinForm里新建了一个Form1.cs，画了个窗体，保存。导入到Monodevelop里之后发现无法编译，原因是一些assembly没有引用。在Project菜单里有个Edit references，打开后选择System等相关的引用即可。
+
+运行的时候还有个问题，中文默认是无法显示的。我用的系统locale是`en_US.UTF-8`，虽然同是UTF-8，但如果不设成`zh_CN.UTF-8`就不行。这个也许跟VS项目的配置文件有关系，因为写了中文的这个项目是用VS创建的。但也可能是类似于gettext的问题，设置了中文文本，没有设置英文文本，不然同是UTF-8应该是兼容的才对。

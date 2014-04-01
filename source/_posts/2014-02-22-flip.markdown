@@ -1,0 +1,21 @@
+---
+layout: post
+title:  "Flip"
+date:   2014-02-22 12:52:00
+categories:
+---
+
+<link rel="stylesheet" href="/css/flip.css">
+
+Flip game是一个小游戏，在二维棋盘上点击任意方格，其相邻方格都会跟它一起改变颜色。游戏目标是将所有方格由白色变成黑色。
+
+在下面的表格中输入长和宽，点击按钮开始。
+
+<input type="text" id="row">
+<input type="text" id="col">
+<button id="start">Start</button>
+<div id="gameArea" align="center"></div>
+<script src="/js/vendor/jquery.min.js"></script>
+<script src="/js/vendor/underscore-min.js"></script>
+<script src="/js/vendor/backbone-min.js"></script>
+<script src="/js/flip.bb.js"></script>

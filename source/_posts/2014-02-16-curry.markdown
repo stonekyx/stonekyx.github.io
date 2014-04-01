@@ -1,0 +1,9 @@
+---
+layout: post
+title:  Curry首页脚本
+date:   2014-02-16 13:13:00
+categories:
+---
+
+<canvas id='curry-game'></canvas>
+<script src='/js/curry.js'></script>

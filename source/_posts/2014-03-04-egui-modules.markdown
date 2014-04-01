@@ -1,0 +1,28 @@
+---
+layout: post
+title:  EGUI模块结构
+date:   2014-03-04 14:17:00
+categories:
+---
+
+<div class="mxgraph" style="position:relative;left:50%;overflow:hidden;width:592px;height:335px;margin-left:-296px;"><div style="width:1px;height:1px;overflow:hidden;">7Vtbj+o2EP41+9iKkHDZx7P00L5UqrQPbZ9WXmKCVSdGSVjY8+uPTWaCL4HlEpxIBQmJjInj+fx5/M0YnsJZuvs9J+vVnyKm/Gk4SHIWP4W/PQ2HgXwrw4bFtDBMpRC8ZGvTuBBZRhelYVsKbna2Jgl1DK8Lwl3r3ywuV2ANxs+Hhj8oS1bwnOlwXDUU5Sf2EdMl2fDyl71JtqnmlGBfg8qwG0DXEfT8CYYpdLgmmTGkH0KkhiGnBfthDnvJYFjwkHeRxzQ3TJxl/+m4hd/lFORCyBvVp3Q3o1xNA05Cddv8SGsNV04z49HHbgA4PgjfwNC3LIvF9i0lmYQ2d8CUt8uJlhcv2xUr6euaLFTLVlJG2paM85ngovIxnMnXfO6OCYb5QfOS7mznJf+oSGmZf6ppgdZngOuzusbLrcaJCGwrjQ7hqLIRgDipez5gIj8ALM0QRQ5EMX3fJBchczsC4chEYDr5FXzTMJjcCQLoQoOAfihXbAi8UsICpL7W8ECa6HggTW7BA0KChkdBczn0N87ezwDldudrLzpwfuI4n6j9olMyhGF3eEwdPBYiTb3QIHiGlQluDz26Hbhbx4yzfVQYFFIhOAAUW5Zykt0rQEZ2PMCopWHRCEYwaCFCgmjQwCDrNWcLUjKRXcUFhPd8Mpj++6QC9GGoiDihV20Q87mKCu0A0h0iSF8tKOwXx9U7xOXeW5LJo/ehuz+6akny4xUuRV6uRCIywr8frC90x8p/ZOtACp3q6l91pT5nckBak7qs2o7iVohNvof3sFZLkiuKGgxWozoJri44kV5mMAFjTrlc+x9mPtAEKjzjL8H2oROjF/aDt1QOwLd0QY832qTHGys3nRu/5TlRDuHX1uoLRcOAoN+RudOAqjw6iujU1+WH6vEHNtUQn0cwV4P0nWDAgAfB2iFYndbch2CRG79vIthEZ1hgMkzqFI1iDRl8E8UwYP2/OXbNzLq5LCxXbWrlFiuheCGcJaros5BToco2L2r3lZqOf4OGlMXxfqbb2LCt/TocNiT4WDXSZwttN9U43CIHMqxrWIIJJFhd4BK4yd2mZHwfxnwmN6GV74e4QDQMwmkDCGi7CYSwIcNVev0aHYuAXpvWYKLvQ8Q3VP5ISd6KMt8syo2s9/pCoDsI3GhpdHN/3+2o6NF3N4uRRxpLlrxJl2S9zw8A9Qr2DwA+qi0RVAmdZhFUCaRTIgiQM0QQzJAhgmDRPoT2MaEdDiCeWwM8Oo6xuQFb3789mXNjTM9oBpQyaAYYPmh2jGbB8DKaWTKvbZYFboX2JMsKmqSSFV/XCyyGfVkvcPkF/NfpBVh0z64jBw2hLa7PZdvQ7gg3r7bZZ5+M2Ofg9rgsgW19/2b6IV49pF/DJto3+tXFawwONmuupV/dccv0G057Rr+W99jjDDT4h5n6FwwEuhn7a28o2ONaVsPvEO6mnK4ILFjreczrpYrYPVq/ZV71ww1NAau2epKrRgwTV0zsY17PmFe3oOTpVOG8BQunao/1eumZghuHMY1st3h+afFoNDZlSNRQNr7bkYJ7RguWjkGJrN+KeQXFPU9wf6/cCVPQOxSgeE7mAxQ3NYeHdwxK6CSR/kDBxEQDBXaPjkGxU5W6FOADFPdYHopMXTPFSlBrb32A4qpFV1Z0whQ7CcYfWvoAxT2zRMHTLSiBFG1dgRI1gNIPVMbWntx0zHU3qlyoyjOxP+anWSxrMmJ7sMSkWFHV6emKyEHB779XZ2bn5V5NGh3G25tyXTS2ynWD+s8ql6r2kdWV01F7Kh5/gKavjn4E0sgSZwEOtf3VIS8Pfz6rQDz8GTD8/hM=</div></div>
+<script type="text/javascript" src="https://www.draw.io/embed.js"></script>
+
+用数字标出了模块之间的依赖关系。
+Client side是用户端模块的集合，这三个模块对外的依赖关系就统一表示了，另外内部依赖关系也很紧密。除了`client_lib`以外基本上不能完全独立。`utils`也是，它们对外在被依赖上地位和机会基本一样，也就是说别的模块只要依赖了utils中的任意一个，那么依赖其他几个也是很自然的（这不是约束条件，只是经常出现的情况）。
+
+1. `event`依赖`comm`，很明显的一个原因就是`event`里要产生基本的消息。消息类型是在`comm`里定义的。
+2. `server_lib`依赖`comm`，这个更显然了，`server_lib`里面都是对`comm`里定义的消息的处理，比如针对不同的消息类型，调用不同的服务器端函数进行操作。
+3. Client side依赖`comm`，因为客户端要跟服务器通信，也是要靠消息的。`client_lib`就跟`server_lib`基本上一样，也是针对各种消息的处理，所以也是大量地依赖`comm`。
+4. `comm`里有些处理需要用到消息队列，这时就会对`data_structures`产生依赖。
+5. `graph`在绘制图形的时候，至少也需要用到`color`里定义的颜色结构体和透明处理函数。
+6. Client side里`widget`也经常用到队列之类的结构（`data_structures`），以及被客户端广泛需要的`color`。
+7. `data_structures`里有鼠标指针结构，它会用到`color`，因为鼠标是彩色的。如果把`utils`看作一个模块的话，这就变成内部依赖了。
+8. `config_parser`用来从统一格式的配置文件中读取参数。来自`data_structures`的vector被用来存储读入的配置项。
+9. `application`会在接收到消息的时候向合适的`widget`转发，转发的方式就是通过`widget`的callback函数。
+10. `application`的很多操作需要跟服务器通信。客户端跟服务器通信的方式就是通过`client_lib`里的函数。
+11. 原因跟上面类似，`widget`要控制控件的绘制，而它本身没有绘图的权限，所以需要通过`client_lib`向服务器发出请求。
+
+总的来说，`utils`里的模块被依赖的几率应该是最高的，同时也不太依赖别的模块。
+
+另外还有两个特别的、用椭圆表示的模块，它们在编译后生成可执行文件，而不是库文件。`debug`里的代码生成若干客户端程序，`window_manager`生成一个大的服务器程序。

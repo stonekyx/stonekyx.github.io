@@ -1,0 +1,9 @@
+.gameCell {
+    width: 25px;
+    height: 25px;
+    border: solid grey 1px;
+}
+
+.filled {
+    background: grey;
+}
