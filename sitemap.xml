@@ -93,16 +93,22 @@
         <lastmod>2014-04-01T23:54:37+08:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://stonekyx.github.io/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/
+        </loc>
+        <lastmod>2014-04-07T17:52:55+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://stonekyx.github.io/blog/archives/</loc>
-        <lastmod>2014-04-02T00:53:14+08:00</lastmod>
+        <lastmod>2014-04-07T17:52:55+08:00</lastmod>
     </url>
     <url>
         <loc>http://stonekyx.github.io/</loc>
-        <lastmod>2014-04-02T00:53:14+08:00</lastmod>
+        <lastmod>2014-04-07T17:52:55+08:00</lastmod>
     </url>
     <url>
         <loc>http://stonekyx.github.io/about.html</loc>
-        <lastmod>2014-04-01T23:56:01+08:00</lastmod>
+        <lastmod>2014-04-07T17:40:18+08:00</lastmod>
     </url>
     <url>
         <loc>http://stonekyx.github.io/robots.txt</loc>

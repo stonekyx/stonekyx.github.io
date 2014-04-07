@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-04-02T01:00:34+08:00</updated>
+  <updated>2014-04-07T17:53:21+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Stone Kang]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Conflicts(?) Between ALSA and PulseAudio]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/"/>
+    <updated>2014-04-07T17:49:47+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio</id>
+    <content type="html"><![CDATA[<p>在用cmus的代码写播放器的时候，发现在运行PulseAudio的系统上使用ALSA输出会有杂音。这个问题应该是可以通过安装PulseAudio的组件解决的，但是为了临时解决，更快的办法是执行<code>pulseaudio -k</code>来停止PulseAudio的服务。当然，为了正常播放还得确保ALSA安装正常才行。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Jekyll + Bootstrap]]></title>
@@ -2241,30 +2250,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     <content type="html"><![CDATA[<p><canvas id='curry-game'></canvas></p>
 
 <script src='http://stonekyx.github.io/js/curry.js'></script>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Item List App]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/02/15/itemlist/"/>
-    <updated>2014-02-15T01:33:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/02/15/itemlist</id>
-    <content type="html"><![CDATA[<div id='friend_list'></div>
-
-
-<p><button id='add_friend'>Add friend</button></p>
-
-<script src="js/vendor/jquery.min.js"></script>
-
-
-<script src="js/vendor/underscore-min.js"></script>
-
-
-<script src="js/vendor/backbone-min.js"></script>
-
-
-<script src='js/itemlist.js'></script>
 
 ]]></content>
   </entry>

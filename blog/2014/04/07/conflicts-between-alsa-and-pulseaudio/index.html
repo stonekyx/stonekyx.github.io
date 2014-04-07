@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Item List App - Stone's blog on Github Pages</title>
+  <title>Conflicts(?) Between ALSA and PulseAudio - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content=" Add friend ">
+  <meta name="description" content="在用cmus的代码写播放器的时候，发现在运行PulseAudio的系统上使用ALSA输出会有杂音。这个问题应该是可以通过安装PulseAudio的组件解决的，但是为了临时解决，更快的办法是执行pulseaudio -k来停止PulseAudio的服务。当然，为了正常播放还得确保ALSA安装正常才行 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/02/15/itemlist">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">Item List App</h1>
+      <h1 class="entry-title">Conflicts(?) Between ALSA and PulseAudio</h1>
     
     
       <p class="meta">
@@ -85,29 +85,14 @@
   
 
 
-<time datetime="2014-02-15T01:33:00+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+<time datetime="2014-04-07T17:49:47+08:00" pubdate data-updated="true">Apr 7<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><div id='friend_list'></div>
-
-
-<p><button id='add_friend'>Add friend</button></p>
-
-<script src="js/vendor/jquery.min.js"></script>
-
-
-<script src="js/vendor/underscore-min.js"></script>
-
-
-<script src="js/vendor/backbone-min.js"></script>
-
-
-<script src='js/itemlist.js'></script>
-
+<div class="entry-content"><p>在用cmus的代码写播放器的时候，发现在运行PulseAudio的系统上使用ALSA输出会有杂音。这个问题应该是可以通过安装PulseAudio的组件解决的，但是为了临时解决，更快的办法是执行<code>pulseaudio -k</code>来停止PulseAudio的服务。当然，为了正常播放还得确保ALSA安装正常才行。</p>
 </div>
 
 
@@ -130,7 +115,7 @@
   
 
 
-<time datetime="2014-02-15T01:33:00+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+<time datetime="2014-04-07T17:49:47+08:00" pubdate data-updated="true">Apr 7<span>th</span>, 2014</time>
       
 
 
@@ -138,7 +123,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/02/15/itemlist/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/02/15/itemlist/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/" >Tweet</a>
   
   
   
@@ -147,10 +132,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/02/14/welcome-to-jekyll/" title="Previous Post: Jekyll!">&laquo; Jekyll!</a>
+        <a class="basic-alignment left" href="/blog/2014/03/15/jekyll-and-bootstrap/" title="Previous Post: Jekyll + Bootstrap">&laquo; Jekyll + Bootstrap</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/02/16/curry/" title="Next Post: Curry首页脚本">Curry首页脚本 &raquo;</a>
       
     </p>
   </footer>
