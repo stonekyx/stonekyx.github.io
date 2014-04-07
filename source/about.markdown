@@ -1,9 +1,7 @@
 ---
-layout: default
+layout: page
 title:  About me
 ---
-
-#About me
 
 I'm an undergraduate student in Dalian University of Technology, majoring in Software Engineering, though I hardly dare to say so in public... Well, don't mind.
 
