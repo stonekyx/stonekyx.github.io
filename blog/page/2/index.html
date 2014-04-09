@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。 其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的， &hellip;">
+  <meta name="description" content="非递归地后序遍历二叉树。 TreeNode it = root; do { while(it.left!=null) { stack.push(it); it=it.left; } if(it.right!=null) { stack.push(it); it=it.right; continue &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,142 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/tree-traversal-iterative/">Non-recursive Binary-tree Traversal</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T05:09:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>非递归地后序遍历二叉树。</p>
+
+<div>
+  <pre><code class='java'>TreeNode it = root;
+    do {
+        while(it.left!=null) {
+            stack.push(it);
+            it=it.left;
+        }
+        if(it.right!=null) {
+            stack.push(it);
+            it=it.right;
+            continue;
+        }
+        while(stack.size()&gt;0) {
+            ans.add(it.val);
+            TreeNode par = stack.pop();
+            if(par.left == it &amp;&amp; par.right != null) {
+                stack.push(par);
+                it=par.right;
+                break;
+            } else {
+                it=par;
+                continue;
+            }
+        }
+    } while(it!=root);
+    ans.add(it.val);
+    return ans;</code></pre>
+</div>
+
+
+<p>一次大循环以回溯为结束。简单来说，就是尽量向左走，如果回溯过程中发现能向右走，那么马上停止回溯，向右走一步，继续遍历右子树。所以，整个遍历过程中是<strong>不断遍历右子树</strong>，而这些右子树<strong>以左结点的链为轴排布</strong>。</p>
+</div>
+  
+  
+
+
+      
+    </article>
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/heap/">Heapによくあった問題</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T04:30:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在写堆的时候，经常出现无法通过堆排序检查的现象。其实解决问题之后发现，印象中大部分堆的问题都是这同一个。</p>
+
+<div>
+  <pre><code class='java'>public void sink(int x) {
+    int i=x, j, kfreq=freq[x], kkey=key[x];
+    while(i*2&lt;=tot) {
+        j=i*2;
+        if(j+1&lt;=tot &amp;&amp; freq[j+1]&lt;freq[j]) j++;
+        if(freq[j]&lt;kfreq) {
+            freq[i]=freq[j];
+            key[i]=key[j];
+            keymap.put(key[i],i);
+            i=j;
+        } else break;
+    }
+    freq[i]=kfreq;
+    key[i]=kkey;
+    keymap.put(key[i], i);
+}</code></pre>
+</div>
+
+
+<p>堆的下沉操作。这个堆里关键字是<code>freq[]</code>，另有一个附加值<code>key[]</code>。<code>keymap</code>是一个HashMap，记录对应key在堆中的位置。这是其他部分程序要用到的，这里不管。</p>
+
+<p>前面说到的问题就是，很容易把第6行的kfreq写成<code>freq[i]</code>。写的时候总觉得<code>freq[i]</code>和<code>freq[j]</code>比较很正常，因为下面也是它们之间在赋值。<strong>但是下沉操作中<code>freq[i]</code>的值最开始就被提出去了，到下沉结束才会落到最后的那个i上。</strong>所以这里应该跟提出去的那个k比较，而不是一直在变化的<code>freq[i]</code>。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -500,83 +636,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/17/guess/">Guess</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-17T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-      
-    </article>
-  
-  
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/16/curry/">Curry首页脚本</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-16T21:13:00+08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><canvas id='curry-game'></canvas></p>
-
-<script src='/js/curry.js'></script>
-
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -594,6 +653,14 @@ tree-&gt;parent = tree_real_parent;</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/">Real-time Audio Streaming With SDL Audio</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/">Conflicts(?) Between ALSA and PulseAudio</a>
       </li>
     
@@ -603,14 +670,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     
       <li class="post">
         <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a>
       </li>
     
   </ul>

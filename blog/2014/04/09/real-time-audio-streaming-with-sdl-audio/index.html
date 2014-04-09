@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Real-time Audio Streaming With SDL Audio - Stone's blog on Github Pages</title>
+  <meta name="author" content="Stone Kang">
+
+  
+  <meta name="description" content="SDL虽然不是专门的音频输出系统，但也能帮助进行跨平台的音频输出支持。至少可以期望在Windows上不用为每个版本写一个输出模块了。 SDL2开始支持32位的采样格式，所以在最近的项目里尝试用SDL2来实时输出解码后的音频流。 SDL为音频输出提供的接口很简单，只要设定好采样格式等参数， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stone's blog on Github Pages</a></h1>
+  
+    <h2>Life is like a Melody.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonekyx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about.html">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Real-time Audio Streaming With SDL Audio</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-09T19:09:51+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>SDL虽然不是专门的音频输出系统，但也能帮助进行跨平台的音频输出支持。至少可以期望在Windows上不用为每个版本写一个输出模块了。</p>
+
+<p>SDL2开始支持32位的采样格式，所以在最近的项目里尝试用SDL2来实时输出解码后的音频流。</p>
+
+<p>SDL为音频输出提供的接口很简单，只要设定好采样格式等参数，执行<code>SDL_OpenAudio()</code>，成功以后就可以用<code>SDL_PauseAudio(0)</code>开始播放。播放是在另外一个线程中进行的，所以需要准备一个callback函数，用来被那个线程调用，并填充buffer。通过这种方式，就能比较自由地控制播放了，因为我们虽然刚初始化完就开始播放了，但只要在没有准备好的时候，由callback函数往buffer里填充0即可输出静音。</p>
+
+<p>接下来就是写入真正的音频流了。由于项目里采用了producer-consumer模型，由生产者解码后，音频流必须实时由消费者输出到输出系统里去，也就是说consumer每调用一次<code>player-&gt;write(buf, cnt)</code>，就必须输出一段音乐。当然，是否应该block等待是无所谓的，只要能够在适当的时候卡住consumer，并等待buffer消耗就行。</p>
+
+<p>如果是ALSA，这一点是自动完成的，而且就连API调用部分都直接用cmus的代码了，所以完全不用担心。但是SDL的API调用全部自己写，所以需要处理buffer的问题。SDL并没有提供一个方便的buffer管理接口，而且还有多线程同步的问题，所以我就暂时借用了producer-consumer模型用到的Monitor。这个Monitor实现的是一个泛型的循环队列。每当consumer要写入一段音频流的时候，我们就把它存放到Monitor里，当然也还是一样地用Chunk类型来存。在前面提到的callback函数里，不断从Monitor里提取出一个Chunk，并用它填充SDL给的缓冲区，直到缓冲区填满为止。所以这里其实又是一个小小的producer-consumer模型。而且Monitor本身是支持多线程操作的。</p>
+
+<hr />
+
+<p>但有个问题，SDL跟ALSA配合在一起的时候，会经常发生underrun。这貌似是个已知的问题，几年前网上有人问，但是好像没有有效的解决办法。其实在我本地是有办法解决的，只要去掉ALSA的best-rate resampling就行了。但是这个是我想要使用的，因为它能大大提高音频质量。（当然也可能是心理作用，不过毕竟CPU平均升到30%左右，效果应该是很不错的才对。即便是心理作用，听着也确实舒服。）</p>
+
+<p>暂时还没用OSS、AO或者PulseAudio试过，接下来打算在Windows里试一下。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Stone Kang</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-09T19:09:51+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/" title="Previous Post: Conflicts(?) between ALSA and PulseAudio">&laquo; Conflicts(?) between ALSA and PulseAudio</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/04/09/sony-interview-summary/" title="Next Post: Sony interview summary">Sony interview summary &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/">Real-time Audio Streaming With SDL Audio</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/">Conflicts(?) Between ALSA and PulseAudio</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Stone Kang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

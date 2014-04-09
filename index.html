@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="在用cmus的代码写播放器的时候，发现在运行PulseAudio的系统上使用ALSA输出会有杂音。这个问题应该是可以通过安装PulseAudio的组件解决的，但是为了临时解决，更快的办法是执行pulseaudio -k来停止PulseAudio的服务。当然，为了正常播放还得确保ALSA安装正常才行 &hellip;">
+  <meta name="description" content="其实写这个本身就只是在排遣而已。今天中午收到Sony的拒绝信，虽然礼貌地（应该是吧..）回了一封，但心里毕竟还是过不去。又给Harada发了一封定期汇报，结果心里还是过不去。 Sony的面试是远程会议的形式，三个日本工程师在东京办公室，旁边另有一个日本HR进行翻译。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,108 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-09T19:25:35+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>其实写这个本身就只是在排遣而已。今天中午收到Sony的拒绝信，虽然礼貌地（应该是吧..）回了一封，但心里毕竟还是过不去。又给Harada发了一封定期汇报，结果心里还是过不去。</p>
+
+<p>Sony的面试是远程会议的形式，三个日本工程师在东京办公室，旁边另有一个日本HR进行翻译。当然他后来也会问一些HR方面的问题。</p>
+
+<p>工程师问的问题大多是项目经验相关的，HR问了申请的目的，以及想去日本的目的（后者估计是我给引出来的）。<strong>感觉工程师们和HR都没怎么听懂我说的话。</strong>这个估计是这次最大的败笔。后来在Sony官网上看到有中国人成功去了日本工作的经验介绍，说语言能力不太重要，但一定要能够清楚地表达。这也确实是个问题。事后，我觉得工程师和HR对我的回答没有反应，并不光是日本人不熟悉英语的问题，更大的原因出自我的表达能力。在面试过程中，有段时间我的注意力被视频会议软件完全吸引了，那段时间根本就不知道自己在说什么，<strong>完全用错词，或者语法完全混乱</strong>。</p>
+
+<p>我想如果能够更清楚地表达我的经验和能力，应该通过面试的概率会高很多。</p>
+
+<p>有点像NOIp之后，或者被Google惨拒之后的感觉。还想多说，但已无语。</p>
+</div>
+  
+  
+
+
+      
+    </article>
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/">Real-time Audio Streaming With SDL Audio</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-09T19:09:51+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>SDL虽然不是专门的音频输出系统，但也能帮助进行跨平台的音频输出支持。至少可以期望在Windows上不用为每个版本写一个输出模块了。</p>
+
+<p>SDL2开始支持32位的采样格式，所以在最近的项目里尝试用SDL2来实时输出解码后的音频流。</p>
+
+<p>SDL为音频输出提供的接口很简单，只要设定好采样格式等参数，执行<code>SDL_OpenAudio()</code>，成功以后就可以用<code>SDL_PauseAudio(0)</code>开始播放。播放是在另外一个线程中进行的，所以需要准备一个callback函数，用来被那个线程调用，并填充buffer。通过这种方式，就能比较自由地控制播放了，因为我们虽然刚初始化完就开始播放了，但只要在没有准备好的时候，由callback函数往buffer里填充0即可输出静音。</p>
+
+<p>接下来就是写入真正的音频流了。由于项目里采用了producer-consumer模型，由生产者解码后，音频流必须实时由消费者输出到输出系统里去，也就是说consumer每调用一次<code>player-&gt;write(buf, cnt)</code>，就必须输出一段音乐。当然，是否应该block等待是无所谓的，只要能够在适当的时候卡住consumer，并等待buffer消耗就行。</p>
+
+<p>如果是ALSA，这一点是自动完成的，而且就连API调用部分都直接用cmus的代码了，所以完全不用担心。但是SDL的API调用全部自己写，所以需要处理buffer的问题。SDL并没有提供一个方便的buffer管理接口，而且还有多线程同步的问题，所以我就暂时借用了producer-consumer模型用到的Monitor。这个Monitor实现的是一个泛型的循环队列。每当consumer要写入一段音频流的时候，我们就把它存放到Monitor里，当然也还是一样地用Chunk类型来存。在前面提到的callback函数里，不断从Monitor里提取出一个Chunk，并用它填充SDL给的缓冲区，直到缓冲区填满为止。所以这里其实又是一个小小的producer-consumer模型。而且Monitor本身是支持多线程操作的。</p>
+
+<hr />
+
+<p>但有个问题，SDL跟ALSA配合在一起的时候，会经常发生underrun。这貌似是个已知的问题，几年前网上有人问，但是好像没有有效的解决办法。其实在我本地是有办法解决的，只要去掉ALSA的best-rate resampling就行了。但是这个是我想要使用的，因为它能大大提高音频质量。（当然也可能是心理作用，不过毕竟CPU平均升到30%左右，效果应该是很不错的才对。即便是心理作用，听着也确实舒服。）</p>
+
+<p>暂时还没用OSS、AO或者PulseAudio试过，接下来打算在Windows里试一下。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -428,142 +530,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/01/tree-traversal-iterative/">Non-recursive Binary-tree Traversal</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-01T05:09:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>非递归地后序遍历二叉树。</p>
-
-<div>
-  <pre><code class='java'>TreeNode it = root;
-    do {
-        while(it.left!=null) {
-            stack.push(it);
-            it=it.left;
-        }
-        if(it.right!=null) {
-            stack.push(it);
-            it=it.right;
-            continue;
-        }
-        while(stack.size()&gt;0) {
-            ans.add(it.val);
-            TreeNode par = stack.pop();
-            if(par.left == it &amp;&amp; par.right != null) {
-                stack.push(par);
-                it=par.right;
-                break;
-            } else {
-                it=par;
-                continue;
-            }
-        }
-    } while(it!=root);
-    ans.add(it.val);
-    return ans;</code></pre>
-</div>
-
-
-<p>一次大循环以回溯为结束。简单来说，就是尽量向左走，如果回溯过程中发现能向右走，那么马上停止回溯，向右走一步，继续遍历右子树。所以，整个遍历过程中是<strong>不断遍历右子树</strong>，而这些右子树<strong>以左结点的链为轴排布</strong>。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/01/heap/">Heapによくあった問題</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-01T04:30:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在写堆的时候，经常出现无法通过堆排序检查的现象。其实解决问题之后发现，印象中大部分堆的问题都是这同一个。</p>
-
-<div>
-  <pre><code class='java'>public void sink(int x) {
-    int i=x, j, kfreq=freq[x], kkey=key[x];
-    while(i*2&lt;=tot) {
-        j=i*2;
-        if(j+1&lt;=tot &amp;&amp; freq[j+1]&lt;freq[j]) j++;
-        if(freq[j]&lt;kfreq) {
-            freq[i]=freq[j];
-            key[i]=key[j];
-            keymap.put(key[i],i);
-            i=j;
-        } else break;
-    }
-    freq[i]=kfreq;
-    key[i]=kkey;
-    keymap.put(key[i], i);
-}</code></pre>
-</div>
-
-
-<p>堆的下沉操作。这个堆里关键字是<code>freq[]</code>，另有一个附加值<code>key[]</code>。<code>keymap</code>是一个HashMap，记录对应key在堆中的位置。这是其他部分程序要用到的，这里不管。</p>
-
-<p>前面说到的问题就是，很容易把第6行的kfreq写成<code>freq[i]</code>。写的时候总觉得<code>freq[i]</code>和<code>freq[j]</code>比较很正常，因为下面也是它们之间在赋值。<strong>但是下沉操作中<code>freq[i]</code>的值最开始就被提出去了，到下沉结束才会落到最后的那个i上。</strong>所以这里应该跟提出去的那个k比较，而不是一直在变化的<code>freq[i]</code>。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -579,6 +545,14 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/">Real-time Audio Streaming With SDL Audio</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/">Conflicts(?) Between ALSA and PulseAudio</a>
       </li>
     
@@ -588,14 +562,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a>
       </li>
     
   </ul>
