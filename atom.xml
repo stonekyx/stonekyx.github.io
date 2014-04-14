@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-04-14T22:15:59+08:00</updated>
+  <updated>2014-04-14T22:26:27+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -18,10 +18,14 @@
     <link href="http://stonekyx.github.io/blog/2014/04/14/things-to-do-in-curry/"/>
     <updated>2014-04-14T22:13:17+08:00</updated>
     <id>http://stonekyx.github.io/blog/2014/04/14/things-to-do-in-curry</id>
-    <content type="html"><![CDATA[<p>要做的事有三件：
-1. 迁移数据库到远程服务器
-2. 将首页游戏放到独立的js view中，并允许切换subview
-3. 登录窗口需要在缩放時仍然处于屏幕中心</p>
+    <content type="html"><![CDATA[<p>要做的事有三件：</p>
+
+<ol>
+<li>迁移数据库到远程服务器</li>
+<li>将首页游戏放到独立的js view中，并允许切换subview</li>
+<li>登录窗口需要在缩放時仍然处于屏幕中心</li>
+</ol>
+
 ]]></content>
   </entry>
   
