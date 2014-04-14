@@ -9,7 +9,11 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="其实写这个本身就只是在排遣而已。今天中午收到Sony的拒绝信，虽然礼貌地（应该是吧..）回了一封，但心里毕竟还是过不去。又给Harada发了一封定期汇报，结果心里还是过不去。 Sony的面试是远程会议的形式，三个日本工程师在东京办公室，旁边另有一个日本HR进行翻译。 &hellip;">
+  <meta name="description" content="要做的事有三件：
+1. 迁移数据库到远程服务器
+2. 将首页游戏放到独立的js view中，并允许切换subview
+3. 登录窗口需要在缩放時仍然处于屏幕中心
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +69,49 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-14T22:13:17+08:00" pubdate data-updated="true">Apr 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>要做的事有三件：
+1. 迁移数据库到远程服务器
+2. 将首页游戏放到独立的js view中，并允许切换subview
+3. 登录窗口需要在缩放時仍然处于屏幕中心</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -477,59 +524,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/01/median/">Median 中位数</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-01T19:23:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在Leetcode上遇到了百度质量部电话面试的题，求两个有序数组的中位数。时间复杂度要求是<code>O(log(n+m))</code>，虽然过了之后感觉复杂度是<code>O(logn+logm)</code>。</p>
-
-<p>这个题的关键是用常数时间判断两个数组中任意元素是否为中位数，以及不是的话，中位数在它的哪一边。但更重要的是另一个问题。</p>
-
-<div>
-  <pre><code class='java'>Integer left = findLeft(A,B);
-    if(left==null) left = findLeft(B,A);
-    Integer right = findRight(A,B);
-    if(right==null) right = findRight(B,A);
-    return (left+right)/2.0;</code></pre>
-</div>
-
-
-<p>主函数中的过程。关键问题是findLeft和findRight两个函数。之前求中位数往往会考虑个数为奇数和偶数的情况，但是如果考虑中位数总是有两个，只是它们可能重合，就能统一起这两种情况。这两个中位数在有序数列中，<strong>一个是前面有<code>(tot_length)/2</code>个元素，另一个是后面有这么多个元素。</strong>对于奇数个元素的情况，它们是重合的，<code>(a+b)/2=a=b</code>；对于偶数个情况，它们正好相邻，而答案也是<code>(a+b)/2</code>。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -545,6 +539,10 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
       </li>
     
@@ -558,10 +556,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
       </li>
     
   </ul>

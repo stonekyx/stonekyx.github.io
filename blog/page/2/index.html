@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="非递归地后序遍历二叉树。 TreeNode it = root; do { while(it.left!=null) { stack.push(it); it=it.left; } if(it.right!=null) { stack.push(it); it=it.right; continue &hellip;">
+  <meta name="description" content="在Leetcode上遇到了百度质量部电话面试的题，求两个有序数组的中位数。时间复杂度要求是O(log(n+m))，虽然过了之后感觉复杂度是O(logn+logm)。 这个题的关键是用常数时间判断两个数组中任意元素是否为中位数，以及不是的话，中位数在它的哪一边。但更重要的是另一个问题。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,59 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/median/">Median 中位数</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T19:23:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在Leetcode上遇到了百度质量部电话面试的题，求两个有序数组的中位数。时间复杂度要求是<code>O(log(n+m))</code>，虽然过了之后感觉复杂度是<code>O(logn+logm)</code>。</p>
+
+<p>这个题的关键是用常数时间判断两个数组中任意元素是否为中位数，以及不是的话，中位数在它的哪一边。但更重要的是另一个问题。</p>
+
+<div>
+  <pre><code class='java'>Integer left = findLeft(A,B);
+    if(left==null) left = findLeft(B,A);
+    Integer right = findRight(A,B);
+    if(right==null) right = findRight(B,A);
+    return (left+right)/2.0;</code></pre>
+</div>
+
+
+<p>主函数中的过程。关键问题是findLeft和findRight两个函数。之前求中位数往往会考虑个数为奇数和偶数的情况，但是如果考虑中位数总是有两个，只是它们可能重合，就能统一起这两种情况。这两个中位数在有序数列中，<strong>一个是前面有<code>(tot_length)/2</code>个元素，另一个是后面有这么多个元素。</strong>对于奇数个元素的情况，它们是重合的，<code>(a+b)/2=a=b</code>；对于偶数个情况，它们正好相邻，而答案也是<code>(a+b)/2</code>。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -554,88 +607,6 @@
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/22/object-tree/">Object Tree</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-22T05:02:00+08:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>EGUI的对象树</h1>
-
-<p>对象树就是在object结构中组建出树。组建树的代码在object.c中并没有提供，而是在其他地方隐式体现的。</p>
-
-<h1>对象树的隐式规则</h1>
-
-<p>对象本身并没有强制組成一棵树，也就是说并不是一个object结构体就能组成一棵单结点的树。</p>
-
-<p>一棵对象树必须要有至少两个结点，这两个结点都是树根。它们可以理解成一种循环的上下关系。令真正的树根为root，那么它上面必须还有一个伪根fakeroot，并且<code>root-&gt;parent==fakeroot &amp;&amp; fakeroot-&gt;parent==root</code>，也就是两个结点互相为对方的父结点。</p>
-
-<p>在添加更多子结点的时候，<code>object_attach_child()</code>的参数应该是root及其下面的结点。</p>
-
-<p>由于并没有规定谁是真正的树根，在编写API的时候，可以选择返回任意一个树根，但是在用object.c提供的接口进行遍历的时候，应该认定<strong>fakeroot</strong>为树根。</p>
-
-<p>object.c提供的遍历接口依赖于root和fakeroot的这种循环上下关系，而且<code>attach_child</code>也会及时地修正fakeroot里保存的内部数据，所以在使用这些接口时需要考虑清楚fakeroot的安全性（它是不是还被用做保存了其他数据，因为那些数据在<code>attach_child</code>的时候会被覆盖）和正确性（循环上下关系是否成立）。</p>
-
-<h1>代码示例</h1>
-
-<p>以下代码摘自<code>application/manipulate_window.c</code>。</p>
-
-<div>
-  <pre><code class='cpp'>node = OBJECT_POINTER(w);
-tree = node-&gt;parent;
-tree_real_parent = tree-&gt;parent;
-tree-&gt;parent = node;
-node = object_tree_l_most_node(tree);
-while(node != NULL)
-{
-    union message msg;
-    msg.base.type = MESSAGE_TYPE_WIDGET_REPAINT;
-    msg.widget_repaint.area = WIDGET_POINTER(node)-&gt;area;
-    if(WIDGET_POINTER(node)-&gt;callback != NULL)
-        WIDGET_POINTER(node)-&gt;callback(node, &amp;msg);
-
-    node = object_tree_iterator_increment(tree, node);
-}
-tree-&gt;parent = tree_real_parent;</code></pre>
-</div>
-
-
-<p>这段代码是为了遍历以w（也就是node）为根的子树。由于在原树中w并不是树根，所以需要临时把它的父结点改成fakeroot来让w成为树根，遍历完再改回去。代码上体现在第3行和第16行。</p>
-
-<p>在第14行增长迭代器的时候，提供给接口的参数是作为fakeroot存在的tree指针，而不是真正的根。实际上，由于真正的根在初始化部分之后基本上就没用了，所以在这段代码后半部分直接就把node当迭代器来用了。（<strong>这是很不好的习惯！</strong>）</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -653,6 +624,10 @@ tree-&gt;parent = tree_real_parent;</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
       </li>
     
@@ -666,10 +641,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     
       <li class="post">
         <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a>
       </li>
     
   </ul>
