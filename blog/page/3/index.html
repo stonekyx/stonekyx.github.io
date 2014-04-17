@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="EGUI的对象树 对象树就是在object结构中组建出树。组建树的代码在object.c中并没有提供，而是在其他地方隐式体现的。 对象树的隐式规则 对象本身并没有强制組成一棵树，也就是说并不是一个object结构体就能组成一棵单结点的树。 一棵对象树必须要有至少两个结点，这两个结点都是树根。 &hellip;">
+  <meta name="description" content=" Flip game是一个小游戏，在二维棋盘上点击任意方格，其相邻方格都会跟它一起改变颜色。游戏目标是将所有方格由白色变成黑色。 在下面的表格中输入长和宽，点击按钮开始。 Start ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -38,7 +38,7 @@
   <header role="banner"><hgroup>
   <h1><a href="/">Stone's blog on Github Pages</a></h1>
   
-    <h2>Life is like a Melody.</h2>
+    <h2>誰かが描く遠い庭のわがままな物語</h2>
   
 </hgroup>
 
@@ -65,6 +65,69 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/22/flip/">Flip</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-22T20:52:00+08:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><link rel="stylesheet" href="/css/flip.css"></p>
+
+<p>Flip game是一个小游戏，在二维棋盘上点击任意方格，其相邻方格都会跟它一起改变颜色。游戏目标是将所有方格由白色变成黑色。</p>
+
+<p>在下面的表格中输入长和宽，点击按钮开始。</p>
+
+<p><input type="text" id="row">
+<input type="text" id="col">
+<button id="start">Start</button></p>
+
+<div id="gameArea" align="center"></div>
+
+
+<script src="/js/vendor/jquery.min.js"></script>
+
+
+<script src="/js/vendor/underscore-min.js"></script>
+
+
+<script src="/js/vendor/backbone-min.js"></script>
+
+
+<script src="/js/flip.bb.js"></script>
+
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -447,6 +510,10 @@ tree-&gt;parent = tree_real_parent;</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/">Details of Framebuffer-drawing Process in EGUI</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
       </li>
     
@@ -460,10 +527,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     
       <li class="post">
         <a href="/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/">Conflicts(?) Between ALSA and PulseAudio</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a>
       </li>
     
   </ul>
