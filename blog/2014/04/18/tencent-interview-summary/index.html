@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Jekyll + Bootstrap - Stone's blog on Github Pages</title>
+  <title>Tencent Interview Summary - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="Jekyll原来的页面效果太少，而且也想练习一下Bootstrap，所以想办法在Jekyll里用上Bootstrap了。 折腾了这么久，最后发现这个早就被实现过了。Jekyll-Bootstrap貌似就是一个很完整的实现。不过既然都已经折腾出来了，就这样吧。 首先， &hellip;">
+  <meta name="description" content="HR说最迟今天给通知，于是现在还没给，我就认定二面没有通过了。 这次的技术方面感觉是没什么大问题的，虽然一面时并没有回答出面试官问的很多问题，但总体来说应对上是可以的，而且一面也在进行了整整1小时以后顺利通过了。 二面感觉更加倾向于HR面试。面试官似乎并不是太看重技术， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/03/15/jekyll-and-bootstrap">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/18/tencent-interview-summary">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">Jekyll + Bootstrap</h1>
+      <h1 class="entry-title">Tencent Interview Summary</h1>
     
     
       <p class="meta">
@@ -85,28 +85,20 @@
   
 
 
-<time datetime="2014-03-15T22:41:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+<time datetime="2014-04-18T20:55:15+08:00" pubdate data-updated="true">Apr 18<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Jekyll原来的页面效果太少，而且也想练习一下Bootstrap，所以想办法在Jekyll里用上Bootstrap了。</p>
+<div class="entry-content"><p>HR说最迟今天给通知，于是现在还没给，我就认定二面没有通过了。</p>
 
-<p>折腾了这么久，最后发现这个早就被实现过了。<a href="http://jekyllbootstrap.com/">Jekyll-Bootstrap</a>貌似就是一个很完整的实现。不过既然都已经折腾出来了，就这样吧。</p>
+<p>这次的技术方面感觉是没什么大问题的，虽然一面时并没有回答出面试官问的很多问题，但总体来说应对上是可以的，而且一面也在进行了整整1小时以后顺利通过了。</p>
 
-<p>首先，由于担心Bootstrap里的HTML class跟Jekyll用到的重名，所以将Jekyll所有的class都加上了<code>jekyll-</code>这样的前缀。这样分辨起来也容易一点。不过这里还是用没有前缀的版本来记录。</p>
+<p>二面感觉更加倾向于HR面试。面试官似乎并不是太看重技术，而且对于我的回答也没有作出一个很懂技术的人应有的反应，甚至难以观察他是否满意。从HR的角度分析失败的原因，就十分明显了。我对有些HR问题的回答<strong>太过冗长、拐弯抹角</strong>，导致对方不耐烦，或者不明所以。比如对方问到我期望的工作城市，我根据第一反应解释了不想到北京、上海的原因，然后又转回，说从发展机会考虑还是选择北京或上海。这里明显能观察到对方的不满意。</p>
 
-<p>将文件都复制过来以后，首先要折腾的就是导航栏了。感觉导航栏的HTML结构实在是太复杂，而且很容易就被已有的HTML class影响，还不知道影响来自哪里。</p>
-
-<ul>
-<li><p>这次首先遇上的问题是标题按钮跟其他导航按钮不对齐。原因是Jekyll原来用<code>&lt;h1&gt;</code>当标题，放到Bootstrap里之后，它跟一个<code>&lt;ul&gt;</code>当兄弟，由于h1有更多的margin，就出问题了。把h1换成div。</p></li>
-<li><p>然后是title这个HTML类的问题。它混在导航栏里之后，会让所在的那个div有特别多的<code>margin-bottom</code>。这样就使得导航栏下面多出一块空白，非常不好看。把title这个类从标签里去掉。</p></li>
-<li><p>导航栏那个大div所在的位置也很重要，它的宽度会受到父div的影响。Jekyll里的header原来就是放在一个有site类的容器里，而site是固定宽度的，这就让导航栏没法随着窗口的大小而伸缩了。其实把Bootstrap的container类加在site类后面就行了，然后把Jekyll的main.css里site的<code>width</code>属性名改成<code>max-width</code>。</p></li>
-<li><p>怎么感觉Blog Posts这几个字变大了..去看一下。</p></li>
-</ul>
-
+<p>在二面没有通过的现在，再看最后问的那几个问题，也是很尴尬的。当时满心以为能够通过，于是问到对方所在部门，以及对工作压力的感觉，并陈述了我提出问题的原因：希望了解自己将来工作场所的情况。所以，总结是不应该当场假设通过。一面的时候问的技术问题也许还可以：腾讯内部使用的版本控制方法。</p>
 </div>
 
 
@@ -129,7 +121,7 @@
   
 
 
-<time datetime="2014-03-15T22:41:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+<time datetime="2014-04-18T20:55:15+08:00" pubdate data-updated="true">Apr 18<span>th</span>, 2014</time>
       
 
 
@@ -137,7 +129,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/03/15/jekyll-and-bootstrap/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/03/15/jekyll-and-bootstrap/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/18/tencent-interview-summary/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/18/tencent-interview-summary/" >Tweet</a>
   
   
   
@@ -146,10 +138,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/03/08/mono/" title="Previous Post: Linux + Mono + WinForm == Windows + VC# ?">&laquo; Linux + Mono + WinForm == Windows + VC# ?</a>
+        <a class="basic-alignment left" href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/" title="Previous Post: Details of framebuffer-drawing process in EGUI">&laquo; Details of framebuffer-drawing process in EGUI</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/" title="Next Post: Conflicts(?) between ALSA and PulseAudio">Conflicts(?) between ALSA and PulseAudio &raquo;</a>
       
     </p>
   </footer>
