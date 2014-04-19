@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-04-18T21:06:07+08:00</updated>
+  <updated>2014-04-19T19:22:29+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -12,6 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[EGUI Bugfix in 0eb4856]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856/"/>
+    <updated>2014-04-19T18:51:56+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856</id>
+    <content type="html"><![CDATA[<p>在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序<code>multi_windows</code>，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。</p>
+
+<p>在现在的master分支里直接revert 0eb4856是不能再现这个问题的，因为该commit修改了一些其他的代码，而那些代码的API已经发生变化。要再现这个bug，可以在<a href="http://stonekyx.github.io/attach/0eb4856-revert.patch">这里</a>下载反转patch，在commit 5debfbce的EGUI根目录应用之后即可。初学者想练习gdb的话，建议先不看下面的内容和patch文件的内容，自己找出这个bug。</p>
+
+<hr />
+
+<p>万一以上patch无效，或者不想使用patch，则需要在<code>window_manager/window_manager_input_handler.c</code>里找到<code>mask_active_by_mouse_down</code>函数，并将以下代码注释掉：</p>
+
+<div>
+  <pre><code class='cpp'>if(!all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position)) {
+    /* Clear useless pointers in tainted iter */
+    window_info_iterator_clear(&amp;iter);
+}</code></pre>
+</div>
+
+
+<p>并加上一行：</p>
+
+<div>
+  <pre><code class='cpp'>all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position);</code></pre>
+</div>
+
+
+<p>再编译后即可。</p>
+
+<hr />
+
+<p>简单来说，这个bug的原因就是在函数调用失败之后，没有检查错误的返回值，也没有重置失败调用所产生的无效迭代器。其实这也可以说是一个设计缺陷，因为只要后面检查无效迭代器的代码直接依赖这个未clear的值就好了，可惜它依赖的是另外一个值。</p>
+
+<p>这个未重置的值会导致将来在对vector结构操作的时候给出-1的下标，于是就把某个别的指针给覆盖掉了。此后在使用那个指针的时候，会出现无效地址。</p>
+
+<p>那个被覆盖掉的指针是<code>global_wm.application_info_vector.head-&gt;data</code>，不过调试的时候在崩溃地点发现的指针应该不是这个名字，因为那是在一个复杂的迭代函数里。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Tencent Interview Summary]]></title>
@@ -1542,43 +1582,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
 <p>如果不需要音轨信息，就可以结束了。但那显然不可能。用CD获取音轨信息最好的工具是Musicbrainz的官方工具picard。遗憾的是，这是一个图形化界面的工具。先导入所有的flac文件，然后查询CD信息，获取结束之后将flac一首首拖到CD的音轨信息上去，最后保存即可。</p>
 
 <p>如果CD比较高级，自带有音轨信息，那么可以用cdda2wav来读取。<code>cdda2wav -J -g -D /dev/sr0</code>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[开箱报告]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/02/23/opening-report-click/"/>
-    <updated>2014-02-23T23:07:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/02/23/opening-report-click</id>
-    <content type="html"><![CDATA[<p>这次买了两张CD，ClariS的CLICK和竹達彩奈的apple symphony。快递比较坑，到了之后还延迟了三天才送货。不过很不幸，手一滑给了揽货员一个差评。晚上再补派货员的。</p>
-
-<p>第一张照例是开箱。萌购的习惯就是拿报纸来填充，所以最上面一张总是报纸。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713437764/" title="IMG_20140223_125147 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm8.staticflickr.com/7441/12713437764_5842e97423_c.jpg" width="800" height="600" alt="IMG_20140223_125147"></a></p>
-
-<p>里面一层也和以往一样，是塑料的充气袋。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713439594/" title="IMG_20140223_125247 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm6.staticflickr.com/5544/12713439594_609bf18a11_c.jpg" width="800" height="600" alt="IMG_20140223_125247"></a></p>
-
-<p>萌购的可脱标签在两张CD上都有。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713440584/" title="IMG_20140223_125507 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm8.staticflickr.com/7295/12713440584_63573cd8fb_c.jpg" width="800" height="600" alt="IMG_20140223_125507"></a></p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713441944/" title="IMG_20140223_125529 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm4.staticflickr.com/3777/12713441944_14ff4584f8_c.jpg" width="800" height="600" alt="IMG_20140223_125529"></a></p>
-
-<p>apple symphony的包装袋是只能破坏的，所以打开之后就没法再装回去了。不知道是不是跟通常盘有关。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12712991465/" title="IMG_20140223_125629 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm4.staticflickr.com/3751/12712991465_2cf95715e3_c.jpg" width="800" height="600" alt="IMG_20140223_125629"></a></p>
-
-<p>CLICK是期间限定生产盘，14年5月末截止。袋子上有CD的标签，看来这个袋子不是萌购套上的，应该是买来就有。袋子是封条式的，可以重复使用。但由于是单曲，所以CD盒是纸盒（CD托盘当然还是塑料），而且歌词只有一张纸。这是头一次买单曲CD。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12712992125/" title="IMG_20140223_125646 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm8.staticflickr.com/7314/12712992125_917596bfd6_c.jpg" width="800" height="600" alt="IMG_20140223_125646"></a></p>
-
-<p>apple symphony毕竟是album，尽管是通常盘，还是比较正式一些，有厚厚的一册歌词，跟其他专辑一样。apple symphony还有一种特别版，非常贵，但是当然特典也很多。这次还是望而却步了。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12712992685/" title="IMG_20140223_130053 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm6.staticflickr.com/5539/12712992685_740b523961_c.jpg" width="800" height="600" alt="IMG_20140223_130053"></a></p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713158703/" title="IMG_20140223_130101 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm6.staticflickr.com/5523/12713158703_af32635672_c.jpg" width="800" height="600" alt="IMG_20140223_130101"></a></p>
 ]]></content>
   </entry>
   

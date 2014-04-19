@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="HR说最迟今天给通知，于是现在还没给，我就认定二面没有通过了。 这次的技术方面感觉是没什么大问题的，虽然一面时并没有回答出面试官问的很多问题，但总体来说应对上是可以的，而且一面也在进行了整整1小时以后顺利通过了。 二面感觉更加倾向于HR面试。面试官似乎并不是太看重技术， &hellip;">
+  <meta name="description" content="在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序multi_windows，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。 在现在的master分支里直接revert &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,77 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-19T18:51:56+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序<code>multi_windows</code>，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。</p>
+
+<p>在现在的master分支里直接revert 0eb4856是不能再现这个问题的，因为该commit修改了一些其他的代码，而那些代码的API已经发生变化。要再现这个bug，可以在<a href="/attach/0eb4856-revert.patch">这里</a>下载反转patch，在commit 5debfbce的EGUI根目录应用之后即可。初学者想练习gdb的话，建议先不看下面的内容和patch文件的内容，自己找出这个bug。</p>
+
+<hr />
+
+<p>万一以上patch无效，或者不想使用patch，则需要在<code>window_manager/window_manager_input_handler.c</code>里找到<code>mask_active_by_mouse_down</code>函数，并将以下代码注释掉：</p>
+
+<div>
+  <pre><code class='cpp'>if(!all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position)) {
+    /* Clear useless pointers in tainted iter */
+    window_info_iterator_clear(&amp;iter);
+}</code></pre>
+</div>
+
+
+<p>并加上一行：</p>
+
+<div>
+  <pre><code class='cpp'>all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position);</code></pre>
+</div>
+
+
+<p>再编译后即可。</p>
+
+<hr />
+
+<p>简单来说，这个bug的原因就是在函数调用失败之后，没有检查错误的返回值，也没有重置失败调用所产生的无效迭代器。其实这也可以说是一个设计缺陷，因为只要后面检查无效迭代器的代码直接依赖这个未clear的值就好了，可惜它依赖的是另外一个值。</p>
+
+<p>这个未重置的值会导致将来在对vector结构操作的时候给出-1的下标，于是就把某个别的指针给覆盖掉了。此后在使用那个指针的时候，会出现无效地址。</p>
+
+<p>那个被覆盖掉的指针是<code>global_wm.application_info_vector.head-&gt;data</code>，不过调试的时候在崩溃地点发现的指针应该不是这个名字，因为那是在一个复杂的迭代函数里。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -501,40 +572,6 @@
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-05T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -550,6 +587,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/18/tencent-interview-summary/">Tencent Interview Summary</a>
       </li>
     
@@ -563,10 +604,6 @@
     
       <li class="post">
         <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/">Real-time Audio Streaming With SDL Audio</a>
       </li>
     
   </ul>
