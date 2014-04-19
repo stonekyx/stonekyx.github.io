@@ -1,0 +1,16 @@
+diff --git a/window_manager/window_manager_input_handler.c b/window_manager/window_manager_input_handler.c
+index eaf79bd..a4ed97b 100644
+--- a/window_manager/window_manager_input_handler.c
++++ b/window_manager/window_manager_input_handler.c
+@@ -156,10 +156,7 @@ static si_t mask_active_by_mouse_down(union message * msg)
+ 	struct window_info_iterator iter;
+ 	window_info_iterator_clear(&iter);
+ 
+-	if(!all_app_traversal_decrement(&iter, _do_find_clicked_window, &msg->mouse.cursor_position)) {
+-        /* Clear useless pointers in tainted iter */
+-        window_info_iterator_clear(&iter);
+-    }
++	all_app_traversal_decrement(&iter, _do_find_clicked_window, &msg->mouse.cursor_position);
+ 
+ 	/* 在桌面上按下了鼠标的某个键 */
+ 	if(iter.app_info_ptr == NULL || iter.win_info_ptr == NULL)
