@@ -9,7 +9,17 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序multi_windows，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。 在现在的master分支里直接revert &hellip;">
+  <meta name="description" content="这是设计模式大作业的需求分析说明。 Slideshow是一个简单的幻灯片放映程序，利用SDL实现。从用户编写的幻灯片脚本文件中读取指令，并在窗口中显示简单的图形。暂时不考虑动画的支持。 用户的脚本文件示例如下： 1
+2
+3
+4
+5
+6
+7
+8
+9
+rect 50 50 100 100
+img &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +75,112 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-22T10:06:25+08:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>这是设计模式大作业的需求分析说明。</p>
+
+<hr />
+
+<p>Slideshow是一个简单的幻灯片放映程序，利用SDL实现。从用户编写的幻灯片脚本文件中读取指令，并在窗口中显示简单的图形。暂时不考虑动画的支持。</p>
+
+<p>用户的脚本文件示例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rect 50 50 100 100
+</span><span class='line'>img 300 300 a.jpg
+</span><span class='line'>text 0 0 Hello world!
+</span><span class='line'>newpage
+</span><span class='line'>font Times New Roman
+</span><span class='line'>fontsize 72
+</span><span class='line'>color 25 25 25
+</span><span class='line'>text 20 20 Thanks!
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的示例中共有两张幻灯片，由中间的<code>newpage</code>指令分隔开。第一张上有一个从<code>(50,50)</code>开始的、长宽均为100像素的矩形；一张从<code>(300,300)</code>开始的图片，图片内容是a.jpg；以及<code>(0,0)</code>开始的文字<code>Hello world!</code>。
+第二张只有从<code>(20,20)</code>开始的文字<code>Thanks!</code>，字体为<code>Times New Roman</code>，字体大小为72，颜色为<code>#191919</code>。
+幻灯片之间的切换由用户操作，程序会在<code>newpage</code>指令处等待用户输入。</p>
+
+<p>由于SDL已经提供了基本的图形操作和文字支持，具体的实现应该十分简单。根据后期上课讲授的设计模式，会考虑再加入新的特性。</p>
+
+<p>理想中的用户脚本示例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rect 50 50 100 100 fill //This is comment.
+</span><span class='line'>img 300 300 a.jpg normal //`normal` can also be `scale` or `tile`.
+</span><span class='line'>text 0 0 Hello world!
+</span><span class='line'>newpage 10s //Switch to next page in 10 seconds.
+</span><span class='line'>polygon 50 50 60 60 60 50 fill //Fills a triangle.
+</span><span class='line'>newpage //Don't switch until next user input.
+</span><span class='line'>font Times New Roman
+</span><span class='line'>fontsize 72
+</span><span class='line'>bold
+</span><span class='line'>italic
+</span><span class='line'>color 25 25 25
+</span><span class='line'>text 20 20 Thanks!
+</span><span class='line'>line 20 220 420 220 1 //A gray line.
+</span><span class='line'>end 1m //Closes the window in 1 minute.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同时，用户应该可以在幻灯片播放时用鼠标绘图。这一点借助SDL应该也很容易实现。还可以考虑更复杂的动画、声音，以及用户脚本中的可编程性等。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -538,40 +654,6 @@
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-05T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -587,6 +669,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a>
       </li>
     
@@ -600,10 +686,6 @@
     
       <li class="post">
         <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
       </li>
     
   </ul>

@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="这次买了两张CD，ClariS的CLICK和竹達彩奈的apple symphony。快递比较坑，到了之后还延迟了三天才送货。不过很不幸，手一滑给了揽货员一个差评。晚上再补派货员的。 第一张照例是开箱。萌购的习惯就是拿报纸来填充，所以最上面一张总是报纸。 里面一层也和以往一样，是塑料的充气袋。 &hellip;">
+  <meta name="description" content="买了CLICK和apple symphony之后是第一次在Linux命令行下Rip，因为想采用尽可能原始和准确的方法，所以稍微绕得有点复杂。 首先，使用的主要工具是cdrdao。用cdrdao的read-cd命令，可以得到一对bin/toc文件。bin是原始的音频数据，toc是相当于cue的东西， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,58 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/24/rip-audio-cd-from-linux-cli/">Rip Audio CD</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-24T05:09:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>买了CLICK和apple symphony之后是第一次在Linux命令行下Rip，因为想采用尽可能原始和准确的方法，所以稍微绕得有点复杂。</p>
+
+<p>首先，使用的主要工具是cdrdao。用cdrdao的<code>read-cd</code>命令，可以得到一对bin/toc文件。bin是原始的音频数据，toc是相当于cue的东西，可以用toc2cue转换到cue。cdrdao的命令具体是：<code>cdrdao read-cd data.toc</code>。第二个参数是toc文件的名字，虽然需要指定这个文件名，但bin文件却可以缺省，不知道为什么。</p>
+
+<p>之后是缓慢的读取过程。其实随时间增加好像有变快的趋势。</p>
+
+<p>读取完之后，<code>file data.bin</code>会发现返回的文件类型是<code>data</code>，不可识别。因为它没有wav的文件头。实际上，这时用<code>aplay -f cdr</code>才可以播放，所以可以推测出这个文件是big endian的。我的习惯是要把CD切成单曲，所以接下来要用bchunk。bchunk有个参数<code>-s</code>可以交换字节序，所以这个时候就要用到它了，不然切出来就会变成杂音。具体指令是<code>bchunk -ws data.bin data.cue data-</code>。</p>
+
+<p>切出来之后，连文件头也已经加好了，是WAV文件。所以接下来是<code>flac data-*.wav</code>。</p>
+
+<p>如果不需要音轨信息，就可以结束了。但那显然不可能。用CD获取音轨信息最好的工具是Musicbrainz的官方工具picard。遗憾的是，这是一个图形化界面的工具。先导入所有的flac文件，然后查询CD信息，获取结束之后将flac一首首拖到CD的音轨信息上去，最后保存即可。</p>
+
+<p>如果CD比较高级，自带有音轨信息，那么可以用cdda2wav来读取。<code>cdda2wav -J -g -D /dev/sr0</code>。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -555,49 +607,9 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/14/backing-up-secret-files-with-gpg/">GPG加密备份密码文件</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>生成一个专用的密钥对，将私钥用paperkey处理之后打印出来，将加密后的文件上传到保密性低的私人空间，公开公钥或打印在私钥背面。</p>
-
-<p>失效的标志是paperkey或者加密后的文件泄露给第二方。此时应该将未泄露的信息立即销毁，并用新的密钥对重新备份。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -610,6 +622,10 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a>
@@ -625,10 +641,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     
       <li class="post">
         <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
       </li>
     
   </ul>

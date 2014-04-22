@@ -74,6 +74,40 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+      
+    </article>
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a></h1>
     
     
@@ -524,58 +558,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/24/rip-audio-cd-from-linux-cli/">Rip Audio CD</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-24T05:09:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>买了CLICK和apple symphony之后是第一次在Linux命令行下Rip，因为想采用尽可能原始和准确的方法，所以稍微绕得有点复杂。</p>
-
-<p>首先，使用的主要工具是cdrdao。用cdrdao的<code>read-cd</code>命令，可以得到一对bin/toc文件。bin是原始的音频数据，toc是相当于cue的东西，可以用toc2cue转换到cue。cdrdao的命令具体是：<code>cdrdao read-cd data.toc</code>。第二个参数是toc文件的名字，虽然需要指定这个文件名，但bin文件却可以缺省，不知道为什么。</p>
-
-<p>之后是缓慢的读取过程。其实随时间增加好像有变快的趋势。</p>
-
-<p>读取完之后，<code>file data.bin</code>会发现返回的文件类型是<code>data</code>，不可识别。因为它没有wav的文件头。实际上，这时用<code>aplay -f cdr</code>才可以播放，所以可以推测出这个文件是big endian的。我的习惯是要把CD切成单曲，所以接下来要用bchunk。bchunk有个参数<code>-s</code>可以交换字节序，所以这个时候就要用到它了，不然切出来就会变成杂音。具体指令是<code>bchunk -ws data.bin data.cue data-</code>。</p>
-
-<p>切出来之后，连文件头也已经加好了，是WAV文件。所以接下来是<code>flac data-*.wav</code>。</p>
-
-<p>如果不需要音轨信息，就可以结束了。但那显然不可能。用CD获取音轨信息最好的工具是Musicbrainz的官方工具picard。遗憾的是，这是一个图形化界面的工具。先导入所有的flac文件，然后查询CD信息，获取结束之后将flac一首首拖到CD的音轨信息上去，最后保存即可。</p>
-
-<p>如果CD比较高级，自带有音轨信息，那么可以用cdda2wav来读取。<code>cdda2wav -J -g -D /dev/sr0</code>。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -593,6 +575,10 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a>
       </li>
     
@@ -606,10 +592,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a>
       </li>
     
   </ul>

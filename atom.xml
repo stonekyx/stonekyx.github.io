@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-04-19T19:22:29+08:00</updated>
+  <updated>2014-04-22T10:41:49+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -12,6 +12,81 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Slideshow Program Requirements Description]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/04/22/slideshow-program-requirements-description/"/>
+    <updated>2014-04-22T10:06:25+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/04/22/slideshow-program-requirements-description</id>
+    <content type="html"><![CDATA[<p>这是设计模式大作业的需求分析说明。</p>
+
+<hr />
+
+<p>Slideshow是一个简单的幻灯片放映程序，利用SDL实现。从用户编写的幻灯片脚本文件中读取指令，并在窗口中显示简单的图形。暂时不考虑动画的支持。</p>
+
+<p>用户的脚本文件示例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rect 50 50 100 100
+</span><span class='line'>img 300 300 a.jpg
+</span><span class='line'>text 0 0 Hello world!
+</span><span class='line'>newpage
+</span><span class='line'>font Times New Roman
+</span><span class='line'>fontsize 72
+</span><span class='line'>color 25 25 25
+</span><span class='line'>text 20 20 Thanks!
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的示例中共有两张幻灯片，由中间的<code>newpage</code>指令分隔开。第一张上有一个从<code>(50,50)</code>开始的、长宽均为100像素的矩形；一张从<code>(300,300)</code>开始的图片，图片内容是a.jpg；以及<code>(0,0)</code>开始的文字<code>Hello world!</code>。
+第二张只有从<code>(20,20)</code>开始的文字<code>Thanks!</code>，字体为<code>Times New Roman</code>，字体大小为72，颜色为<code>#191919</code>。
+幻灯片之间的切换由用户操作，程序会在<code>newpage</code>指令处等待用户输入。</p>
+
+<p>由于SDL已经提供了基本的图形操作和文字支持，具体的实现应该十分简单。根据后期上课讲授的设计模式，会考虑再加入新的特性。</p>
+
+<p>理想中的用户脚本示例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rect 50 50 100 100 fill //This is comment.
+</span><span class='line'>img 300 300 a.jpg normal //`normal` can also be `scale` or `tile`.
+</span><span class='line'>text 0 0 Hello world!
+</span><span class='line'>newpage 10s //Switch to next page in 10 seconds.
+</span><span class='line'>polygon 50 50 60 60 60 50 fill //Fills a triangle.
+</span><span class='line'>newpage //Don't switch until next user input.
+</span><span class='line'>font Times New Roman
+</span><span class='line'>fontsize 72
+</span><span class='line'>bold
+</span><span class='line'>italic
+</span><span class='line'>color 25 25 25
+</span><span class='line'>text 20 20 Thanks!
+</span><span class='line'>line 20 220 420 220 1 //A gray line.
+</span><span class='line'>end 1m //Closes the window in 1 minute.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同时，用户应该可以在幻灯片播放时用鼠标绘图。这一点借助SDL应该也很容易实现。还可以考虑更复杂的动画、声音，以及用户脚本中的可编程性等。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[EGUI Bugfix in 0eb4856]]></title>
@@ -1561,27 +1636,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
 <p>EGUI的event模块利用Linux内核的evdev来获取用户输入。但是之前的方法需要确定出具体的鼠标和键盘，带来了一个很大的问题，因为有时候确定起来标准很模糊。比如在ArchLinux Host + VirtualBox + ArchLinux VM的话，鼠标设备有两个，但其中一个由于未知的原因无法获取点击事件，而且一旦从其中一个读取，另一个就不会再提供同样的消息。这样，即使想通过select所有的设备来检测鼠标也很困难。</p>
 
 <p>Linux的evdev是一个统一的输入设备接口，不管是鼠标、键盘还是手柄，消息的格式都是一样的。所以一个很自然的方法就是直接从所有的event设备接收输入。这个想法也是经历过上述的问题才获得的，因为尽管有两个evdev对应同一个设备，一条消息也不会出现两次。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rip Audio CD]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/02/24/rip-audio-cd-from-linux-cli/"/>
-    <updated>2014-02-24T05:09:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/02/24/rip-audio-cd-from-linux-cli</id>
-    <content type="html"><![CDATA[<p>买了CLICK和apple symphony之后是第一次在Linux命令行下Rip，因为想采用尽可能原始和准确的方法，所以稍微绕得有点复杂。</p>
-
-<p>首先，使用的主要工具是cdrdao。用cdrdao的<code>read-cd</code>命令，可以得到一对bin/toc文件。bin是原始的音频数据，toc是相当于cue的东西，可以用toc2cue转换到cue。cdrdao的命令具体是：<code>cdrdao read-cd data.toc</code>。第二个参数是toc文件的名字，虽然需要指定这个文件名，但bin文件却可以缺省，不知道为什么。</p>
-
-<p>之后是缓慢的读取过程。其实随时间增加好像有变快的趋势。</p>
-
-<p>读取完之后，<code>file data.bin</code>会发现返回的文件类型是<code>data</code>，不可识别。因为它没有wav的文件头。实际上，这时用<code>aplay -f cdr</code>才可以播放，所以可以推测出这个文件是big endian的。我的习惯是要把CD切成单曲，所以接下来要用bchunk。bchunk有个参数<code>-s</code>可以交换字节序，所以这个时候就要用到它了，不然切出来就会变成杂音。具体指令是<code>bchunk -ws data.bin data.cue data-</code>。</p>
-
-<p>切出来之后，连文件头也已经加好了，是WAV文件。所以接下来是<code>flac data-*.wav</code>。</p>
-
-<p>如果不需要音轨信息，就可以结束了。但那显然不可能。用CD获取音轨信息最好的工具是Musicbrainz的官方工具picard。遗憾的是，这是一个图形化界面的工具。先导入所有的flac文件，然后查询CD信息，获取结束之后将flac一首首拖到CD的音轨信息上去，最后保存即可。</p>
-
-<p>如果CD比较高级，自带有音轨信息，那么可以用cdda2wav来读取。<code>cdda2wav -J -g -D /dev/sr0</code>。</p>
 ]]></content>
   </entry>
   
