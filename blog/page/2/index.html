@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="7Vtbj+o2EP41+9iKkHDZx7P00L5UqrQPbZ9WXmKCVSdGSVjY8+uPTWaCL4HlEpxIBQmJjInj+fx5/M0YnsJZuvs9J+vVnyKm/Gk4SHIWP4W/ &hellip;">
+  <meta name="description" content="下周一就要C#上机了，但是实在不想在笔记本上安装VS。所以先尽量找了一下Linux下做C#开发的方法，好在很简单。 需要的工具有Monodevelop(IDE)，WinForm（是个独立的工具，创建VS窗体）。Mono的编译命令是mcs，执行二进制文件有时会加上mono（像解释器一样）， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,52 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/08/mono/">Linux + Mono + WinForm == Windows + VC# ?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-08T23:46:00+08:00" pubdate data-updated="true">Mar 8<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>下周一就要C#上机了，但是实在不想在笔记本上安装VS。所以先尽量找了一下Linux下做C#开发的方法，好在很简单。</p>
+
+<p>需要的工具有Monodevelop(IDE)，<a href="https://github.com/mono/mwf-designer.git">WinForm</a>（是个独立的工具，创建VS窗体）。Mono的编译命令是mcs，执行二进制文件有时会加上mono（像解释器一样），但这个好像不一定需要。所以实际上创建好项目以后用vim也是没问题的。</p>
+
+<p>在Monodevelop里创建的窗体项目一般是GTK的，虽然没有尝试过在GTK项目里添加WinForm窗体，但我想这样应该也没什么问题。总之创建了一个<strong>空项目</strong>，然后在WinForm里新建了一个Form1.cs，画了个窗体，保存。导入到Monodevelop里之后发现无法编译，原因是一些assembly没有引用。在Project菜单里有个Edit references，打开后选择System等相关的引用即可。</p>
+
+<p>运行的时候还有个问题，中文默认是无法显示的。我用的系统locale是<code>en_US.UTF-8</code>，虽然同是UTF-8，但如果不设成<code>zh_CN.UTF-8</code>就不行。这个也许跟VS项目的配置文件有关系，因为写了中文的这个项目是用VS创建的。但也可能是类似于gettext的问题，设置了中文文本，没有设置英文文本，不然同是UTF-8应该是兼容的才对。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -512,52 +558,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/28/egui-event/">EGUI Event的新方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-28T02:31:00+08:00" pubdate data-updated="true">Feb 28<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>断了一下午的网，总算能上了。发现刷github pages用来积累commit很不错..</p>
-
-<hr />
-
-<p>EGUI的event模块利用Linux内核的evdev来获取用户输入。但是之前的方法需要确定出具体的鼠标和键盘，带来了一个很大的问题，因为有时候确定起来标准很模糊。比如在ArchLinux Host + VirtualBox + ArchLinux VM的话，鼠标设备有两个，但其中一个由于未知的原因无法获取点击事件，而且一旦从其中一个读取，另一个就不会再提供同样的消息。这样，即使想通过select所有的设备来检测鼠标也很困难。</p>
-
-<p>Linux的evdev是一个统一的输入设备接口，不管是鼠标、键盘还是手柄，消息的格式都是一样的。所以一个很自然的方法就是直接从所有的event设备接收输入。这个想法也是经历过上述的问题才获得的，因为尽管有两个evdev对应同一个设备，一条消息也不会出现两次。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -575,6 +575,10 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/24/alibaba-interview-summary-i/">Alibaba Interview Summary I</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
       </li>
     
@@ -588,10 +592,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/">Details of Framebuffer-drawing Process in EGUI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
       </li>
     
   </ul>

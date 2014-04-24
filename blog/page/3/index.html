@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="买了CLICK和apple symphony之后是第一次在Linux命令行下Rip，因为想采用尽可能原始和准确的方法，所以稍微绕得有点复杂。 首先，使用的主要工具是cdrdao。用cdrdao的read-cd命令，可以得到一对bin/toc文件。bin是原始的音频数据，toc是相当于cue的东西， &hellip;">
+  <meta name="description" content="断了一下午的网，总算能上了。发现刷github pages用来积累commit很不错.. EGUI的event模块利用Linux内核的evdev来获取用户输入。但是之前的方法需要确定出具体的鼠标和键盘，带来了一个很大的问题，因为有时候确定起来标准很模糊。比如在ArchLinux Host + &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,52 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/28/egui-event/">EGUI Event的新方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-28T02:31:00+08:00" pubdate data-updated="true">Feb 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>断了一下午的网，总算能上了。发现刷github pages用来积累commit很不错..</p>
+
+<hr />
+
+<p>EGUI的event模块利用Linux内核的evdev来获取用户输入。但是之前的方法需要确定出具体的鼠标和键盘，带来了一个很大的问题，因为有时候确定起来标准很模糊。比如在ArchLinux Host + VirtualBox + ArchLinux VM的话，鼠标设备有两个，但其中一个由于未知的原因无法获取点击事件，而且一旦从其中一个读取，另一个就不会再提供同样的消息。这样，即使想通过select所有的设备来检测鼠标也很困难。</p>
+
+<p>Linux的evdev是一个统一的输入设备接口，不管是鼠标、键盘还是手柄，消息的格式都是一样的。所以一个很自然的方法就是直接从所有的event设备接收输入。这个想法也是经历过上述的问题才获得的，因为尽管有两个evdev对应同一个设备，一条消息也不会出现两次。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -567,46 +613,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/14/jekyll-from-android/">Jekyll From Android!</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>How does it work?</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -624,6 +630,10 @@ tree-&gt;parent = tree_real_parent;</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/24/alibaba-interview-summary-i/">Alibaba Interview Summary I</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
       </li>
     
@@ -637,10 +647,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     
       <li class="post">
         <a href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/">Details of Framebuffer-drawing Process in EGUI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/14/things-to-do-in-curry/">Things to Do in Curry</a>
       </li>
     
   </ul>
