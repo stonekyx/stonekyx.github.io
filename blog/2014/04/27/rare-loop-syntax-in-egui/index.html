@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>EGUI Bugfix in 0eb4856 - Stone's blog on Github Pages</title>
+  <title>Rare Loop Syntax in EGUI - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序multi_windows，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。 在现在的master分支里直接revert &hellip;">
+  <meta name="description" content="EGUI代码里有一些比较奇怪的循环语法，比如 struct list_node *pos;
+list_for_each_macro(&amp;t-&gt;header-&gt;units, pos) { if(((struct tab_header_unit*)pos-&gt;data)-&gt; &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/27/rare-loop-syntax-in-egui">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +70,7 @@
   
   <header>
     
-      <h1 class="entry-title">EGUI Bugfix in 0eb4856</h1>
+      <h1 class="entry-title">Rare Loop Syntax in EGUI</h1>
     
     
       <p class="meta">
@@ -85,45 +86,60 @@
   
 
 
-<time datetime="2014-04-19T18:51:56+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
+<time datetime="2014-04-27T20:42:36+08:00" pubdate data-updated="true">Apr 27<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序<code>multi_windows</code>，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。</p>
-
-<p>在现在的master分支里直接revert 0eb4856是不能再现这个问题的，因为该commit修改了一些其他的代码，而那些代码的API已经发生变化。要再现这个bug，可以在<a href="/attach/0eb4856-revert.patch">这里</a>下载反转patch，在commit 5debfbce的EGUI根目录应用之后即可。初学者想练习gdb的话，建议先不看下面的内容和patch文件的内容，自己找出这个bug。</p>
-
-<hr />
-
-<p>万一以上patch无效，或者不想使用patch，则需要在<code>window_manager/window_manager_input_handler.c</code>里找到<code>mask_active_by_mouse_down</code>函数，并将以下代码注释掉：</p>
+<div class="entry-content"><p>EGUI代码里有一些比较奇怪的循环语法，比如</p>
 
 <div>
-  <pre><code class='cpp'>if(!all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position)) {
-    /* Clear useless pointers in tainted iter */
-    window_info_iterator_clear(&amp;iter);
+  <pre><code class='cpp'>struct list_node *pos;
+list_for_each_macro(&amp;t-&gt;header-&gt;units, pos) {
+    if(((struct tab_header_unit*)pos-&gt;data)-&gt;page == new_focus) {
+        tab_header_set_focus(t-&gt;header, pos-&gt;data);
+        return 0;
+    }
 }</code></pre>
 </div>
 
 
-<p>并加上一行：</p>
+<p>这样写的目的是避免为了一小段代码写一个多余的函数。原来为了使用<code>list_for_each</code>函数枚举列表中的元素，必须写一个新的函数，并将它传入<code>list_for_each</code>。</p>
+
+<p>至于<code>list_for_each_macro</code>这种奇怪语法的实现方式，只是利用了一下<code>#define</code>而已。</p>
 
 <div>
-  <pre><code class='cpp'>all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position);</code></pre>
+  <pre><code class='cpp'>#define list_for_each_macro(list, pos) \
+    for((pos)=(list)-&gt;node.next; (pos)!=&amp;(list)-&gt;node; (pos)=(pos)-&gt;next)</code></pre>
 </div>
 
 
-<p>再编译后即可。</p>
+<p>它是利用宏替换隐藏了一个循环。不过由于C语言不能在for后面临时定义循环变量，所以必须由使用者先准备好一个循环变量，也就是那个<code>struct list_node *pos</code>。</p>
 
 <hr />
 
-<p>简单来说，这个bug的原因就是在函数调用失败之后，没有检查错误的返回值，也没有重置失败调用所产生的无效迭代器。其实这也可以说是一个设计缺陷，因为只要后面检查无效迭代器的代码直接依赖这个未clear的值就好了，可惜它依赖的是另外一个值。</p>
+<p>类似地，还有一个地方利用了这种语法。</p>
 
-<p>这个未重置的值会导致将来在对vector结构操作的时候给出-1的下标，于是就把某个别的指针给覆盖掉了。此后在使用那个指针的时候，会出现无效地址。</p>
+<div>
+  <pre><code class='cpp'>struct point *pos;
+struct bresenham_iterator *it;
+bresenham_for_each(pos, it, x1, y1, x2, y2) {
+    screen_set_pixel(s, r, c, pos-&gt;x, pos-&gt;y);
+}</code></pre>
+</div>
 
-<p>那个被覆盖掉的指针是<code>global_wm.application_info_vector.head-&gt;data</code>，不过调试的时候在崩溃地点发现的指针应该不是这个名字，因为那是在一个复杂的迭代函数里。</p>
+
+<p>bresenham是一个绘制直线的算法，为了方便它在不同地方重复使用，将它从graph模块中提取出来了。在上面的<code>for_each</code>循环里，每一次循环都会得到直线上下一个点的坐标。所以，我们只需要将这个点画出来就行了。</p>
+
+<p>很方便的一点是，枚举器it不需要使用者分配空间，正常使用完后也不需要释放，<code>bresenham_next</code>函数在直线走完之后会自动释放空间。当然，如果使用者从中途break出去了，就需要自己释放了。</p>
+
+<p>至于为什么会同时需要pos和it两个循环变量，是由于bresenham算法的原因。我们把算法的每一步都拆成了独立的函数，所以需要有个地方来存放这些步骤之间的状态。it就是存放这些状态的位置。</p>
+
+<hr />
+
+<p>其实改变C语言的语法并不是很好的做法，只有在不得已的时候才用一下。另外，<code>list_for_each</code>好像在Linux内核里也有类似的用法。</p>
 </div>
 
 
@@ -146,7 +162,7 @@
   
 
 
-<time datetime="2014-04-19T18:51:56+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
+<time datetime="2014-04-27T20:42:36+08:00" pubdate data-updated="true">Apr 27<span>th</span>, 2014</time>
       
 
 
@@ -154,7 +170,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/27/rare-loop-syntax-in-egui/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/27/rare-loop-syntax-in-egui/" >Tweet</a>
   
   
   
@@ -163,10 +179,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/04/18/tencent-interview-summary/" title="Previous Post: Tencent Interview Summary">&laquo; Tencent Interview Summary</a>
+        <a class="basic-alignment left" href="/blog/2014/04/24/alibaba-interview-summary-i/" title="Previous Post: Alibaba Interview Summary I">&laquo; Alibaba Interview Summary I</a>
       
       
-        <a class="basic-alignment right" href="/blog/2014/04/22/slideshow-program-requirements-description/" title="Next Post: Slideshow program requirements description">Slideshow program requirements description &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2014/04/27/alibaba-interview-summary-ii/" title="Next Post: Alibaba Interview Summary II">Alibaba Interview Summary II &raquo;</a>
       
     </p>
   </footer>

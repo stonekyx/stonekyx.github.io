@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-04-24T21:47:37+08:00</updated>
+  <updated>2014-04-27T21:24:37+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -12,6 +12,92 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Alibaba Interview Summary II]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/04/27/alibaba-interview-summary-ii/"/>
+    <updated>2014-04-27T21:03:57+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/04/27/alibaba-interview-summary-ii</id>
+    <content type="html"><![CDATA[<p>这次二面比较特别，因为是抱着不想过的想法进行的，所以很多地方十分不规矩。仅限于阿里这一次，以后还得按正常的来。</p>
+
+<hr />
+
+<p>这次是三位面试官，其中两个HR，另外一个最后得知是部门的高管。</p>
+
+<p>我在自我介绍的最后发了一通对一面的牢骚，并表明了我自己的观点。实际上这么说完后我就已经知道没法过了。HR一定已经给差评了。最后还是那个高管要我别再纠结一面，才停下来。他后来又说明了一下一面考官的目的，虽然知道是对的，我也没什么心情听，就应付过去了。最后还被当小孩子看待了，对方说这次面的其实就是Linux下的C++开发。这种事情我听都没听说过。</p>
+
+<p>然后是Linux的一些问题。感觉对方也只是随便问了几个，而且是看我那么强调Linux，才放着算法部分不管，只随便考了几个简单的基础Linux题。首先是gcc的参数，我估计列了十几个，然后还忘了优化开关，对方提醒才补上。然后是gdb的基本用法，线程切换，栈状态，调用层切换等命令。</p>
+
+<p>然后是那些项目经验，随便问了一下cmus的东西，什么类型，代码有没有被对方接受什么的。这种问题怎样都无所谓。</p>
+
+<p>接下来问了一个网络编程的题，要求写出服务器的基本调用流程。忘了listen，被对方指出来了。还问了非阻塞方式，回答得比较含糊，然后被训了，说没做过就不要猜。于是老实闭嘴。包括接下来的共享内存、内存映射，虽然多少有些印象，还是说没做过好了。</p>
+
+<p>然后讨论了一下学习方法，我简单阐述之后，对方总结说我是一个<strong>实用主义者</strong>。这算是本次面试的唯一收获了，这个评价估计以后会要长期使用。我挺喜欢。</p>
+
+<p>说到自己有较强学习能力的时候，HR提出反对，说那是应对能力。那倒也是。不过我后来补充了高中系统学习算法的事例，好像HR也没说什么了。</p>
+
+<p>最后是HR的问题，家人什么的，对自己影响最大的人什么的。后面一个问题我说的是我自己，好像情绪比较激动。</p>
+
+<hr />
+
+<p>面试结束的时候也没有任何留恋，拿起水就走。这种公司怎样都无所谓，这是面完阿里之后的感觉。可能也是一面那个人让我印象太差了吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rare Loop Syntax in EGUI]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/04/27/rare-loop-syntax-in-egui/"/>
+    <updated>2014-04-27T20:42:36+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/04/27/rare-loop-syntax-in-egui</id>
+    <content type="html"><![CDATA[<p>EGUI代码里有一些比较奇怪的循环语法，比如</p>
+
+<div>
+  <pre><code class='cpp'>struct list_node *pos;
+list_for_each_macro(&amp;t-&gt;header-&gt;units, pos) {
+    if(((struct tab_header_unit*)pos-&gt;data)-&gt;page == new_focus) {
+        tab_header_set_focus(t-&gt;header, pos-&gt;data);
+        return 0;
+    }
+}</code></pre>
+</div>
+
+
+<p>这样写的目的是避免为了一小段代码写一个多余的函数。原来为了使用<code>list_for_each</code>函数枚举列表中的元素，必须写一个新的函数，并将它传入<code>list_for_each</code>。</p>
+
+<p>至于<code>list_for_each_macro</code>这种奇怪语法的实现方式，只是利用了一下<code>#define</code>而已。</p>
+
+<div>
+  <pre><code class='cpp'>#define list_for_each_macro(list, pos) \
+    for((pos)=(list)-&gt;node.next; (pos)!=&amp;(list)-&gt;node; (pos)=(pos)-&gt;next)</code></pre>
+</div>
+
+
+<p>它是利用宏替换隐藏了一个循环。不过由于C语言不能在for后面临时定义循环变量，所以必须由使用者先准备好一个循环变量，也就是那个<code>struct list_node *pos</code>。</p>
+
+<hr />
+
+<p>类似地，还有一个地方利用了这种语法。</p>
+
+<div>
+  <pre><code class='cpp'>struct point *pos;
+struct bresenham_iterator *it;
+bresenham_for_each(pos, it, x1, y1, x2, y2) {
+    screen_set_pixel(s, r, c, pos-&gt;x, pos-&gt;y);
+}</code></pre>
+</div>
+
+
+<p>bresenham是一个绘制直线的算法，为了方便它在不同地方重复使用，将它从graph模块中提取出来了。在上面的<code>for_each</code>循环里，每一次循环都会得到直线上下一个点的坐标。所以，我们只需要将这个点画出来就行了。</p>
+
+<p>很方便的一点是，枚举器it不需要使用者分配空间，正常使用完后也不需要释放，<code>bresenham_next</code>函数在直线走完之后会自动释放空间。当然，如果使用者从中途break出去了，就需要自己释放了。</p>
+
+<p>至于为什么会同时需要pos和it两个循环变量，是由于bresenham算法的原因。我们把算法的每一步都拆成了独立的函数，所以需要有个地方来存放这些步骤之间的状态。it就是存放这些状态的位置。</p>
+
+<hr />
+
+<p>其实改变C语言的语法并不是很好的做法，只有在不得已的时候才用一下。另外，<code>list_for_each</code>好像在Linux内核里也有类似的用法。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Alibaba Interview Summary I]]></title>
@@ -1509,153 +1595,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
 <p>堆的下沉操作。这个堆里关键字是<code>freq[]</code>，另有一个附加值<code>key[]</code>。<code>keymap</code>是一个HashMap，记录对应key在堆中的位置。这是其他部分程序要用到的，这里不管。</p>
 
 <p>前面说到的问题就是，很容易把第6行的kfreq写成<code>freq[i]</code>。写的时候总觉得<code>freq[i]</code>和<code>freq[j]</code>比较很正常，因为下面也是它们之间在赋值。<strong>但是下沉操作中<code>freq[i]</code>的值最开始就被提出去了，到下沉结束才会落到最后的那个i上。</strong>所以这里应该跟提出去的那个k比较，而不是一直在变化的<code>freq[i]</code>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Bottom-up Mergesort]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/03/01/bottom-up-mergesort/"/>
-    <updated>2014-03-01T00:32:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/03/01/bottom-up-mergesort</id>
-    <content type="html"><![CDATA[<p>今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。</p>
-
-<p>其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的，不需要像数组一样开另一个来存结果。但是实现起来也特别复杂。</p>
-
-<p>期间遇到一个问题，经过一定的归并过程之后，链表会变短。</p>
-
-<div>
-  <pre><code class='java'>public void merge(ListNode a, ListNode b, int len) {
-        ListNode bprev = nodeAt(a, len);
-        ListNode bnext = null;
-        for(; b!=null &amp;&amp; len&gt;0; b=bnext,len--) {
-            while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
-                a=a.next;
-                if(a==bprev) return;
-            }
-            bprev.next = b.next;
-            bnext = b.next;
-            b.next = a.next;
-            a.next = b;
-        }
-    }</code></pre>
-</div>
-
-
-<p>这是归并过程，a、b两段是一前一后相连的（即a的最后一个结点后面就是b），每段长度为len。其实为了方便实现，“a”这个参数给的是a段首结点的前面一个，也就是说其实a段有<code>len+1</code>个元素，但b段只有<code>len</code>个。</p>
-
-<p>链表缩短的问题就出在中间那个while循环上。</p>
-
-<div>
-  <pre><code class='java'>while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
-    a=a.next;
-    if(a==bprev) return;
-}</code></pre>
-</div>
-
-
-<p>这个while循环用来找到b结点的插入位置，插入位置就是这个循环结束后的a的后面。</p>
-
-<p>第3行里bprev是一个不变的指针，指向b段的第一个元素前面的结点。利用它可以方便地将b删除。当b段全部删除时，bprev就成了合并后序列的最后一个元素。但是一旦中途a走到了bprev上，就说明a段已经结束了，b段已经不需要再移动。</p>
-
-<p>之前错误的写法是将第2、3行对调，if写在前面。这样的话在这一轮循环结束后，a还可能停留在bprev上，而不再有机会return。此时再判断<code>a.next.val&lt;b.val</code>为真（因为<code>a.next</code>此时就等于<code>b</code>），就退出while了。</p>
-
-<p>while下面就会将b插入到a的后面，而b已经在a的后面。事实上，此后的第一次操作没有任何影响，链表保持不变。问题是此时b后面的值跟b一样，那么它仍然能跳过while循环（因为当b变成它时，<code>a.next.val==b.val</code>），再次执行移动操作。此时bprev已经不正确了，它仍然跟a重合，而且在b的前面两个位置。这会导致在操作中将b前面的结点（也就是bprev后面的结点）删除。再往后，如果还有连续相等的结点，这种情况还会继续发生。</p>
-
-<hr />
-
-<p>这个问题花费了一个下午的时间。如果是在面试中的话，早已经无望了吧。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[毕设项目预期]]></title>
-    <link href="http://stonekyx.github.io/proj-prosp.html"/>
-    <updated>2014-02-28T03:37:00+08:00</updated>
-    <id>http://stonekyx.github.io/project-prospection</id>
-    <content type="html"><![CDATA[<p>该页没有发布，如果你觉得可以发布到首页上去，请告诉我。另外，该网站禁止了搜索引擎的索引。</p>
-
-<hr />
-
-<h1>项目前段：Curry</h1>
-
-<h2>任务目标</h2>
-
-<ol>
-<li>首页游戏。在现有基础上实现地图的背景，并设计完成行走任务之后的效果。</li>
-<li>用户认证，将用户分成未认证、dev、pm、admin等几类。需要实现的内容包括后台的数据结构和前端界面。</li>
-<li>对后台数据（即用户可以保存的数据）进行规定并实现。这一步不包括前端。</li>
-<li>不同用户的视图和数据权限，即实现前端。设计数据添加、展示和修改（允许的话）的方式。可能有大量的js。</li>
-<li>测试、排除bug。进一步的修正和补充在项目后段中通过实践来完成。</li>
-</ol>
-
-
-<h2>时间预期</h2>
-
-<p>以下序号与上文对应。括号内为粗略日期，后面是预期完成度，最后还有的话是备注。这部分考虑毕设的截止日期为6月10日。<strong>注意：</strong>本文没有考虑开发人员临时离开学校的情况。</p>
-
-<ol>
-<li>3月初（3/10），95%</li>
-<li>3月中后（3/20），90%</li>
-<li>3月底（3/30），60%，可能会有不完整的设计，到下面一步中再完善。</li>
-<li>4月底（4/25），70%~75%，可能有不完整的实现，到项目后段再完善。</li>
-<li>4月末（4/30），90%（或未知，根据前面的实现程度，可能无法评估bug的数量）</li>
-</ol>
-
-
-<h2>理想化时间预期</h2>
-
-<p>以下不考虑毕设截止时间，以最合适的开发状态和完成度优先。</p>
-
-<ol>
-<li>3月初（3/10），95%</li>
-<li>3月中后（3/25），95%</li>
-<li>3月底（3/30），60%，同上，可能有不完整设计。</li>
-<li>5月初（5/10），90%~95%，有比较充足的时间完善前面的设计。</li>
-<li>5月中后（5/20），90%。</li>
-</ol>
-
-
-<hr />
-
-<h1>项目后段：Game</h1>
-
-<h2>任务目标</h2>
-
-<ol>
-<li>完成游戏概念和玩法的设计，最好是用js或者sdl做出一个mockup。</li>
-<li>实现角色移动。</li>
-<li>实现背景。</li>
-<li>实现游戏逻辑。</li>
-<li>游戏逻辑的增强和补充、测试、排除bug。</li>
-<li>附加目标：补充Curry的不足之处，利用多余时间完成。</li>
-</ol>
-
-
-<h2>时间预期</h2>
-
-<p>时间预期与之前格式一致。</p>
-
-<ol>
-<li>5月初（5/3），85%。这一步时间较短，但正好放假，视情况可能会工作得比较累。设计工作可能需要在开始之前就完成一部分。</li>
-<li>5月初（5/7），95%。在黑屏幕上移动即可，不用考虑边界逻辑。熟悉使用的库。</li>
-<li>5月中（5/12），90%。考虑小人在背景上移动产生的效果，考虑边界。</li>
-<li>5月底（5/25），80%。要具有一定的可玩性。</li>
-<li>6月初（6/5），90%。</li>
-<li>与整个Game子项目同步进行。5月底（5/30），85%。</li>
-</ol>
-
-
-<h2>理想化时间预期</h2>
-
-<ol>
-<li>6月初（6/1），85%。</li>
-<li>6月初（6/5），95%。</li>
-<li>6月中（6/15），90%。</li>
-<li>7月中（7/15），80%。</li>
-<li>7月底（7/30），90%。</li>
-<li>与整个子项目同步进行，8月中（8/15），99%。</li>
-</ol>
-
 ]]></content>
   </entry>
   

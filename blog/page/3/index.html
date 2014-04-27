@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="断了一下午的网，总算能上了。发现刷github pages用来积累commit很不错.. EGUI的event模块利用Linux内核的evdev来获取用户输入。但是之前的方法需要确定出具体的鼠标和键盘，带来了一个很大的问题，因为有时候确定起来标准很模糊。比如在ArchLinux Host + &hellip;">
+  <meta name="description" content="今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。 其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,94 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/bottom-up-mergesort/">Bottom-up Mergesort</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T00:32:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。</p>
+
+<p>其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的，不需要像数组一样开另一个来存结果。但是实现起来也特别复杂。</p>
+
+<p>期间遇到一个问题，经过一定的归并过程之后，链表会变短。</p>
+
+<div>
+  <pre><code class='java'>public void merge(ListNode a, ListNode b, int len) {
+        ListNode bprev = nodeAt(a, len);
+        ListNode bnext = null;
+        for(; b!=null &amp;&amp; len&gt;0; b=bnext,len--) {
+            while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
+                a=a.next;
+                if(a==bprev) return;
+            }
+            bprev.next = b.next;
+            bnext = b.next;
+            b.next = a.next;
+            a.next = b;
+        }
+    }</code></pre>
+</div>
+
+
+<p>这是归并过程，a、b两段是一前一后相连的（即a的最后一个结点后面就是b），每段长度为len。其实为了方便实现，“a”这个参数给的是a段首结点的前面一个，也就是说其实a段有<code>len+1</code>个元素，但b段只有<code>len</code>个。</p>
+
+<p>链表缩短的问题就出在中间那个while循环上。</p>
+
+<div>
+  <pre><code class='java'>while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
+    a=a.next;
+    if(a==bprev) return;
+}</code></pre>
+</div>
+
+
+<p>这个while循环用来找到b结点的插入位置，插入位置就是这个循环结束后的a的后面。</p>
+
+<p>第3行里bprev是一个不变的指针，指向b段的第一个元素前面的结点。利用它可以方便地将b删除。当b段全部删除时，bprev就成了合并后序列的最后一个元素。但是一旦中途a走到了bprev上，就说明a段已经结束了，b段已经不需要再移动。</p>
+
+<p>之前错误的写法是将第2、3行对调，if写在前面。这样的话在这一轮循环结束后，a还可能停留在bprev上，而不再有机会return。此时再判断<code>a.next.val&lt;b.val</code>为真（因为<code>a.next</code>此时就等于<code>b</code>），就退出while了。</p>
+
+<p>while下面就会将b插入到a的后面，而b已经在a的后面。事实上，此后的第一次操作没有任何影响，链表保持不变。问题是此时b后面的值跟b一样，那么它仍然能跳过while循环（因为当b变成它时，<code>a.next.val==b.val</code>），再次执行移动操作。此时bprev已经不正确了，它仍然跟a重合，而且在b的前面两个位置。这会导致在操作中将b前面的结点（也就是bprev后面的结点）删除。再往后，如果还有连续相等的结点，这种情况还会继续发生。</p>
+
+<hr />
+
+<p>这个问题花费了一个下午的时间。如果是在面试中的话，早已经无望了吧。</p>
+</div>
+  
+  
+
+
+      
+    </article>
+  
+  
   
   
   
@@ -489,130 +577,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/15/itemlist/">Item List App</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-15T01:33:00+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div id='friend_list'></div>
-
-
-<p><button id='add_friend'>Add friend</button></p>
-
-<script src="js/vendor/jquery.min.js"></script>
-
-
-<script src="js/vendor/underscore-min.js"></script>
-
-
-<script src="js/vendor/backbone-min.js"></script>
-
-
-<script src='js/itemlist.js'></script>
-
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/14/welcome-to-jekyll/">Jekyll!</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-14T08:48:00+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div>
-  <pre><code class='javascript'>(function($) {
-    var canvas = document.getElementById('test');
-    var ctx = canvas.getContext('2d');
-    ctx.beginPath();
-    for(var i=5; i&lt;canvas.width; i+=5) {
-        ctx.moveTo(i,0);
-        ctx.lineTo(i,canvas.height);
-    }
-    for(var i=5; i&lt;canvas.height; i+=5) {
-        ctx.moveTo(0,i);
-        ctx.lineTo(canvas.width,i);
-    }
-    ctx.stroke();
-})(jQuery);
-#=&gt; Just keeping a record of how to highlight codes.</code></pre>
-</div>
-
-
-<h1>Javascript test</h1>
-
-<p><canvas id='test'></canvas></p>
-
-<script src='/js/vendor/jquery.min.js'></script>
-
-
-<script src='/js/jstest.js'></script>
-
-
-
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -630,6 +594,14 @@ tree-&gt;parent = tree_real_parent;</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/27/alibaba-interview-summary-ii/">Alibaba Interview Summary II</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/27/rare-loop-syntax-in-egui/">Rare Loop Syntax in EGUI</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/24/alibaba-interview-summary-i/">Alibaba Interview Summary I</a>
       </li>
     
@@ -639,14 +611,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     
       <li class="post">
         <a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/18/tencent-interview-summary/">Tencent Interview Summary</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/">Details of Framebuffer-drawing Process in EGUI</a>
       </li>
     
   </ul>

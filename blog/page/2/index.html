@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="下周一就要C#上机了，但是实在不想在笔记本上安装VS。所以先尽量找了一下Linux下做C#开发的方法，好在很简单。 需要的工具有Monodevelop(IDE)，WinForm（是个独立的工具，创建VS窗体）。Mono的编译命令是mcs，执行二进制文件有时会加上mono（像解释器一样）， &hellip;">
+  <meta name="description" content="在用cmus的代码写播放器的时候，发现在运行PulseAudio的系统上使用ALSA输出会有杂音。这个问题应该是可以通过安装PulseAudio的组件解决的，但是为了临时解决，更快的办法是执行pulseaudio -k来停止PulseAudio的服务。当然，为了正常播放还得确保ALSA安装正常才行 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,100 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/07/conflicts-between-alsa-and-pulseaudio/">Conflicts(?) Between ALSA and PulseAudio</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-07T17:49:47+08:00" pubdate data-updated="true">Apr 7<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在用cmus的代码写播放器的时候，发现在运行PulseAudio的系统上使用ALSA输出会有杂音。这个问题应该是可以通过安装PulseAudio的组件解决的，但是为了临时解决，更快的办法是执行<code>pulseaudio -k</code>来停止PulseAudio的服务。当然，为了正常播放还得确保ALSA安装正常才行。</p>
+</div>
+  
+  
+
+
+      
+    </article>
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/15/jekyll-and-bootstrap/">Jekyll + Bootstrap</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-15T22:41:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Jekyll原来的页面效果太少，而且也想练习一下Bootstrap，所以想办法在Jekyll里用上Bootstrap了。</p>
+
+<p>折腾了这么久，最后发现这个早就被实现过了。<a href="http://jekyllbootstrap.com/">Jekyll-Bootstrap</a>貌似就是一个很完整的实现。不过既然都已经折腾出来了，就这样吧。</p>
+
+<p>首先，由于担心Bootstrap里的HTML class跟Jekyll用到的重名，所以将Jekyll所有的class都加上了<code>jekyll-</code>这样的前缀。这样分辨起来也容易一点。不过这里还是用没有前缀的版本来记录。</p>
+
+<p>将文件都复制过来以后，首先要折腾的就是导航栏了。感觉导航栏的HTML结构实在是太复杂，而且很容易就被已有的HTML class影响，还不知道影响来自哪里。</p>
+
+<ul>
+<li><p>这次首先遇上的问题是标题按钮跟其他导航按钮不对齐。原因是Jekyll原来用<code>&lt;h1&gt;</code>当标题，放到Bootstrap里之后，它跟一个<code>&lt;ul&gt;</code>当兄弟，由于h1有更多的margin，就出问题了。把h1换成div。</p></li>
+<li><p>然后是title这个HTML类的问题。它混在导航栏里之后，会让所在的那个div有特别多的<code>margin-bottom</code>。这样就使得导航栏下面多出一块空白，非常不好看。把title这个类从标签里去掉。</p></li>
+<li><p>导航栏那个大div所在的位置也很重要，它的宽度会受到父div的影响。Jekyll里的header原来就是放在一个有site类的容器里，而site是固定宽度的，这就让导航栏没法随着窗口的大小而伸缩了。其实把Bootstrap的container类加在site类后面就行了，然后把Jekyll的main.css里site的<code>width</code>属性名改成<code>max-width</code>。</p></li>
+<li><p>怎么感觉Blog Posts这几个字变大了..去看一下。</p></li>
+</ul>
+
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -470,94 +564,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/01/bottom-up-mergesort/">Bottom-up Mergesort</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-01T00:32:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天开始做Leetcode。有一题要求NlogN的时间、常数空间对链表排序，在讨论里看到要用自底向上的归并排序。在链表上高速排序一直有种先入为主的观念认为不可行，但这次看来似乎是可行的。</p>
-
-<p>其实也正因为是在链表上，常数空间才特别可以实现，因为链表的元素交换是常数时间的，不需要像数组一样开另一个来存结果。但是实现起来也特别复杂。</p>
-
-<p>期间遇到一个问题，经过一定的归并过程之后，链表会变短。</p>
-
-<div>
-  <pre><code class='java'>public void merge(ListNode a, ListNode b, int len) {
-        ListNode bprev = nodeAt(a, len);
-        ListNode bnext = null;
-        for(; b!=null &amp;&amp; len&gt;0; b=bnext,len--) {
-            while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
-                a=a.next;
-                if(a==bprev) return;
-            }
-            bprev.next = b.next;
-            bnext = b.next;
-            b.next = a.next;
-            a.next = b;
-        }
-    }</code></pre>
-</div>
-
-
-<p>这是归并过程，a、b两段是一前一后相连的（即a的最后一个结点后面就是b），每段长度为len。其实为了方便实现，“a”这个参数给的是a段首结点的前面一个，也就是说其实a段有<code>len+1</code>个元素，但b段只有<code>len</code>个。</p>
-
-<p>链表缩短的问题就出在中间那个while循环上。</p>
-
-<div>
-  <pre><code class='java'>while(a.next!=null &amp;&amp; a.next.val&lt;b.val) {
-    a=a.next;
-    if(a==bprev) return;
-}</code></pre>
-</div>
-
-
-<p>这个while循环用来找到b结点的插入位置，插入位置就是这个循环结束后的a的后面。</p>
-
-<p>第3行里bprev是一个不变的指针，指向b段的第一个元素前面的结点。利用它可以方便地将b删除。当b段全部删除时，bprev就成了合并后序列的最后一个元素。但是一旦中途a走到了bprev上，就说明a段已经结束了，b段已经不需要再移动。</p>
-
-<p>之前错误的写法是将第2、3行对调，if写在前面。这样的话在这一轮循环结束后，a还可能停留在bprev上，而不再有机会return。此时再判断<code>a.next.val&lt;b.val</code>为真（因为<code>a.next</code>此时就等于<code>b</code>），就退出while了。</p>
-
-<p>while下面就会将b插入到a的后面，而b已经在a的后面。事实上，此后的第一次操作没有任何影响，链表保持不变。问题是此时b后面的值跟b一样，那么它仍然能跳过while循环（因为当b变成它时，<code>a.next.val==b.val</code>），再次执行移动操作。此时bprev已经不正确了，它仍然跟a重合，而且在b的前面两个位置。这会导致在操作中将b前面的结点（也就是bprev后面的结点）删除。再往后，如果还有连续相等的结点，这种情况还会继续发生。</p>
-
-<hr />
-
-<p>这个问题花费了一个下午的时间。如果是在面试中的话，早已经无望了吧。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -575,6 +581,14 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/27/alibaba-interview-summary-ii/">Alibaba Interview Summary II</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/27/rare-loop-syntax-in-egui/">Rare Loop Syntax in EGUI</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/24/alibaba-interview-summary-i/">Alibaba Interview Summary I</a>
       </li>
     
@@ -584,14 +598,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/18/tencent-interview-summary/">Tencent Interview Summary</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/">Details of Framebuffer-drawing Process in EGUI</a>
       </li>
     
   </ul>
