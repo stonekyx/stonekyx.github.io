@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-04-27T21:24:37+08:00</updated>
+  <updated>2014-04-28T22:36:23+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Recent Bugfixes in EGUI]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/04/28/recent-bugfixes-in-egui/"/>
+    <updated>2014-04-28T22:22:19+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/04/28/recent-bugfixes-in-egui</id>
+    <content type="html"><![CDATA[<p>最近在解决别人的一些问题的时候，发现EGUI里的两个小bug。</p>
+
+<p>首先是绘制图片的时候会莫名其妙地崩溃。图片是要绘制在gd里的，而gd有一个独立的工作区域，它与图片的长宽无关。估计以往测试图片没出过问题，是因为gd的工作区域被设置得比图片小。这次有人把它设置成全屏后再画，就直接崩溃了。</p>
+
+<p>调试之后发现是<code>engine_draw_bitmap</code>里循环坐标的时候，没有检查图片的边界，而只检查了gd的工作区域边界。</p>
+
+<hr />
+
+<p>另外一个问题则比较纠结，一张85x64x24的彩色图片，被绘制出来以后是灰色的，而且中间有条纹状的颜色错乱。</p>
+
+<p>这个很果断没有当场调试出来。之后发现是bitmap的格式处理有问题。像素矩阵中每一行的第一个字节都应该要对齐到32位，这是bitmap的规定。之前的代码直接用坐标算出要取的字节位置，所以会漏掉一些对齐位。对于这张24位的图片，每一行会错开一字节，所以出错的颜色呈现有规律的条纹。</p>
+
+<p>比较规范的写法好像是一次读取一行，所以不会遇到这种问题。而EGUI里是一次性读取整个文件。</p>
+
+<hr />
+
+<p>想到之前bitmap的头部信息结构体也出现过字节对齐的bug，写这个部分的人C语言基础可能还不够扎实吧。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Alibaba Interview Summary II]]></title>
@@ -1562,39 +1587,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
 
 
 <p>一次大循环以回溯为结束。简单来说，就是尽量向左走，如果回溯过程中发现能向右走，那么马上停止回溯，向右走一步，继续遍历右子树。所以，整个遍历过程中是<strong>不断遍历右子树</strong>，而这些右子树<strong>以左结点的链为轴排布</strong>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Heapによくあった問題]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/03/01/heap/"/>
-    <updated>2014-03-01T04:30:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/03/01/heap</id>
-    <content type="html"><![CDATA[<p>在写堆的时候，经常出现无法通过堆排序检查的现象。其实解决问题之后发现，印象中大部分堆的问题都是这同一个。</p>
-
-<div>
-  <pre><code class='java'>public void sink(int x) {
-    int i=x, j, kfreq=freq[x], kkey=key[x];
-    while(i*2&lt;=tot) {
-        j=i*2;
-        if(j+1&lt;=tot &amp;&amp; freq[j+1]&lt;freq[j]) j++;
-        if(freq[j]&lt;kfreq) {
-            freq[i]=freq[j];
-            key[i]=key[j];
-            keymap.put(key[i],i);
-            i=j;
-        } else break;
-    }
-    freq[i]=kfreq;
-    key[i]=kkey;
-    keymap.put(key[i], i);
-}</code></pre>
-</div>
-
-
-<p>堆的下沉操作。这个堆里关键字是<code>freq[]</code>，另有一个附加值<code>key[]</code>。<code>keymap</code>是一个HashMap，记录对应key在堆中的位置。这是其他部分程序要用到的，这里不管。</p>
-
-<p>前面说到的问题就是，很容易把第6行的kfreq写成<code>freq[i]</code>。写的时候总觉得<code>freq[i]</code>和<code>freq[j]</code>比较很正常，因为下面也是它们之间在赋值。<strong>但是下沉操作中<code>freq[i]</code>的值最开始就被提出去了，到下沉结束才会落到最后的那个i上。</strong>所以这里应该跟提出去的那个k比较，而不是一直在变化的<code>freq[i]</code>。</p>
 ]]></content>
   </entry>
   

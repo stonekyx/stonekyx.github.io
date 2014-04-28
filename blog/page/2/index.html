@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="在用cmus的代码写播放器的时候，发现在运行PulseAudio的系统上使用ALSA输出会有杂音。这个问题应该是可以通过安装PulseAudio的组件解决的，但是为了临时解决，更快的办法是执行pulseaudio -k来停止PulseAudio的服务。当然，为了正常播放还得确保ALSA安装正常才行 &hellip;">
+  <meta name="description" content="SDL虽然不是专门的音频输出系统，但也能帮助进行跨平台的音频输出支持。至少可以期望在Windows上不用为每个版本写一个输出模块了。 SDL2开始支持32位的采样格式，所以在最近的项目里尝试用SDL2来实时输出解码后的音频流。 SDL为音频输出提供的接口很简单，只要设定好采样格式等参数， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,60 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/09/real-time-audio-streaming-with-sdl-audio/">Real-time Audio Streaming With SDL Audio</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-09T19:09:51+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>SDL虽然不是专门的音频输出系统，但也能帮助进行跨平台的音频输出支持。至少可以期望在Windows上不用为每个版本写一个输出模块了。</p>
+
+<p>SDL2开始支持32位的采样格式，所以在最近的项目里尝试用SDL2来实时输出解码后的音频流。</p>
+
+<p>SDL为音频输出提供的接口很简单，只要设定好采样格式等参数，执行<code>SDL_OpenAudio()</code>，成功以后就可以用<code>SDL_PauseAudio(0)</code>开始播放。播放是在另外一个线程中进行的，所以需要准备一个callback函数，用来被那个线程调用，并填充buffer。通过这种方式，就能比较自由地控制播放了，因为我们虽然刚初始化完就开始播放了，但只要在没有准备好的时候，由callback函数往buffer里填充0即可输出静音。</p>
+
+<p>接下来就是写入真正的音频流了。由于项目里采用了producer-consumer模型，由生产者解码后，音频流必须实时由消费者输出到输出系统里去，也就是说consumer每调用一次<code>player-&gt;write(buf, cnt)</code>，就必须输出一段音乐。当然，是否应该block等待是无所谓的，只要能够在适当的时候卡住consumer，并等待buffer消耗就行。</p>
+
+<p>如果是ALSA，这一点是自动完成的，而且就连API调用部分都直接用cmus的代码了，所以完全不用担心。但是SDL的API调用全部自己写，所以需要处理buffer的问题。SDL并没有提供一个方便的buffer管理接口，而且还有多线程同步的问题，所以我就暂时借用了producer-consumer模型用到的Monitor。这个Monitor实现的是一个泛型的循环队列。每当consumer要写入一段音频流的时候，我们就把它存放到Monitor里，当然也还是一样地用Chunk类型来存。在前面提到的callback函数里，不断从Monitor里提取出一个Chunk，并用它填充SDL给的缓冲区，直到缓冲区填满为止。所以这里其实又是一个小小的producer-consumer模型。而且Monitor本身是支持多线程操作的。</p>
+
+<hr />
+
+<p>但有个问题，SDL跟ALSA配合在一起的时候，会经常发生underrun。这貌似是个已知的问题，几年前网上有人问，但是好像没有有效的解决办法。其实在我本地是有办法解决的，只要去掉ALSA的best-rate resampling就行了。但是这个是我想要使用的，因为它能大大提高音频质量。（当然也可能是心理作用，不过毕竟CPU平均升到30%左右，效果应该是很不错的才对。即便是心理作用，听着也确实舒服。）</p>
+
+<p>暂时还没用OSS、AO或者PulseAudio试过，接下来打算在Windows里试一下。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -500,70 +554,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/01/heap/">Heapによくあった問題</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-01T04:30:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在写堆的时候，经常出现无法通过堆排序检查的现象。其实解决问题之后发现，印象中大部分堆的问题都是这同一个。</p>
-
-<div>
-  <pre><code class='java'>public void sink(int x) {
-    int i=x, j, kfreq=freq[x], kkey=key[x];
-    while(i*2&lt;=tot) {
-        j=i*2;
-        if(j+1&lt;=tot &amp;&amp; freq[j+1]&lt;freq[j]) j++;
-        if(freq[j]&lt;kfreq) {
-            freq[i]=freq[j];
-            key[i]=key[j];
-            keymap.put(key[i],i);
-            i=j;
-        } else break;
-    }
-    freq[i]=kfreq;
-    key[i]=kkey;
-    keymap.put(key[i], i);
-}</code></pre>
-</div>
-
-
-<p>堆的下沉操作。这个堆里关键字是<code>freq[]</code>，另有一个附加值<code>key[]</code>。<code>keymap</code>是一个HashMap，记录对应key在堆中的位置。这是其他部分程序要用到的，这里不管。</p>
-
-<p>前面说到的问题就是，很容易把第6行的kfreq写成<code>freq[i]</code>。写的时候总觉得<code>freq[i]</code>和<code>freq[j]</code>比较很正常，因为下面也是它们之间在赋值。<strong>但是下沉操作中<code>freq[i]</code>的值最开始就被提出去了，到下沉结束才会落到最后的那个i上。</strong>所以这里应该跟提出去的那个k比较，而不是一直在变化的<code>freq[i]</code>。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -581,6 +571,10 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/28/recent-bugfixes-in-egui/">Recent Bugfixes in EGUI</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/27/alibaba-interview-summary-ii/">Alibaba Interview Summary II</a>
       </li>
     
@@ -594,10 +588,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/19/egui-bugfix-in-0eb4856/">EGUI Bugfix in 0eb4856</a>
       </li>
     
   </ul>
