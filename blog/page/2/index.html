@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="SDL虽然不是专门的音频输出系统，但也能帮助进行跨平台的音频输出支持。至少可以期望在Windows上不用为每个版本写一个输出模块了。 SDL2开始支持32位的采样格式，所以在最近的项目里尝试用SDL2来实时输出解码后的音频流。 SDL为音频输出提供的接口很简单，只要设定好采样格式等参数， &hellip;">
+  <meta name="description" content="其实写这个本身就只是在排遣而已。今天中午收到Sony的拒绝信，虽然礼貌地（应该是吧..）回了一封，但心里毕竟还是过不去。又给Harada发了一封定期汇报，结果心里还是过不去。 Sony的面试是远程会议的形式，三个日本工程师在东京办公室，旁边另有一个日本HR进行翻译。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,54 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/09/sony-interview-summary/">Sony Interview Summary</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-09T19:25:35+08:00" pubdate data-updated="true">Apr 9<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>其实写这个本身就只是在排遣而已。今天中午收到Sony的拒绝信，虽然礼貌地（应该是吧..）回了一封，但心里毕竟还是过不去。又给Harada发了一封定期汇报，结果心里还是过不去。</p>
+
+<p>Sony的面试是远程会议的形式，三个日本工程师在东京办公室，旁边另有一个日本HR进行翻译。当然他后来也会问一些HR方面的问题。</p>
+
+<p>工程师问的问题大多是项目经验相关的，HR问了申请的目的，以及想去日本的目的（后者估计是我给引出来的）。<strong>感觉工程师们和HR都没怎么听懂我说的话。</strong>这个估计是这次最大的败笔。后来在Sony官网上看到有中国人成功去了日本工作的经验介绍，说语言能力不太重要，但一定要能够清楚地表达。这也确实是个问题。事后，我觉得工程师和HR对我的回答没有反应，并不光是日本人不熟悉英语的问题，更大的原因出自我的表达能力。在面试过程中，有段时间我的注意力被视频会议软件完全吸引了，那段时间根本就不知道自己在说什么，<strong>完全用错词，或者语法完全混乱</strong>。</p>
+
+<p>我想如果能够更清楚地表达我的经验和能力，应该通过面试的概率会高很多。</p>
+
+<p>有点像NOIp之后，或者被Google惨拒之后的感觉。还想多说，但已无语。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -482,78 +530,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/01/tree-traversal-iterative/">Non-recursive Binary-tree Traversal</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-01T05:09:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>非递归地后序遍历二叉树。</p>
-
-<div>
-  <pre><code class='java'>TreeNode it = root;
-    do {
-        while(it.left!=null) {
-            stack.push(it);
-            it=it.left;
-        }
-        if(it.right!=null) {
-            stack.push(it);
-            it=it.right;
-            continue;
-        }
-        while(stack.size()&gt;0) {
-            ans.add(it.val);
-            TreeNode par = stack.pop();
-            if(par.left == it &amp;&amp; par.right != null) {
-                stack.push(par);
-                it=par.right;
-                break;
-            } else {
-                it=par;
-                continue;
-            }
-        }
-    } while(it!=root);
-    ans.add(it.val);
-    return ans;</code></pre>
-</div>
-
-
-<p>一次大循环以回溯为结束。简单来说，就是尽量向左走，如果回溯过程中发现能向右走，那么马上停止回溯，向右走一步，继续遍历右子树。所以，整个遍历过程中是<strong>不断遍历右子树</strong>，而这些右子树<strong>以左结点的链为轴排布</strong>。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -571,6 +547,10 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/02/egui-font-matrix/">EGUI Font Matrix</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/28/recent-bugfixes-in-egui/">Recent Bugfixes in EGUI</a>
       </li>
     
@@ -584,10 +564,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/04/24/alibaba-interview-summary-i/">Alibaba Interview Summary I</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
       </li>
     
   </ul>

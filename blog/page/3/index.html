@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="在写堆的时候，经常出现无法通过堆排序检查的现象。其实解决问题之后发现，印象中大部分堆的问题都是这同一个。 public void sink(int x) { int i=x, j, kfreq=freq[x], kkey=key[x]; while(i*2&lt;=tot) { j=i*2; if &hellip;">
+  <meta name="description" content="非递归地后序遍历二叉树。 TreeNode it = root; do { while(it.left!=null) { stack.push(it); it=it.left; } if(it.right!=null) { stack.push(it); it=it.right; continue &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,78 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/01/tree-traversal-iterative/">Non-recursive Binary-tree Traversal</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-01T05:09:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>非递归地后序遍历二叉树。</p>
+
+<div>
+  <pre><code class='java'>TreeNode it = root;
+    do {
+        while(it.left!=null) {
+            stack.push(it);
+            it=it.left;
+        }
+        if(it.right!=null) {
+            stack.push(it);
+            it=it.right;
+            continue;
+        }
+        while(stack.size()&gt;0) {
+            ans.add(it.val);
+            TreeNode par = stack.pop();
+            if(par.left == it &amp;&amp; par.right != null) {
+                stack.push(par);
+                it=par.right;
+                break;
+            } else {
+                it=par;
+                continue;
+            }
+        }
+    } while(it!=root);
+    ans.add(it.val);
+    return ans;</code></pre>
+</div>
+
+
+<p>一次大循环以回溯为结束。简单来说，就是尽量向左走，如果回溯过程中发现能向右走，那么马上停止回溯，向右走一步，继续遍历右子树。所以，整个遍历过程中是<strong>不断遍历右子树</strong>，而这些右子树<strong>以左结点的链为轴排布</strong>。</p>
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -564,40 +636,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/17/guess/">Guess</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-17T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -615,6 +653,10 @@ tree-&gt;parent = tree_real_parent;</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/02/egui-font-matrix/">EGUI Font Matrix</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/28/recent-bugfixes-in-egui/">Recent Bugfixes in EGUI</a>
       </li>
     
@@ -628,10 +670,6 @@ tree-&gt;parent = tree_real_parent;</code></pre>
     
       <li class="post">
         <a href="/blog/2014/04/24/alibaba-interview-summary-i/">Alibaba Interview Summary I</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/22/slideshow-program-requirements-description/">Slideshow Program Requirements Description</a>
       </li>
     
   </ul>

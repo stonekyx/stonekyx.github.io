@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Tencent Interview Summary - Stone's blog on Github Pages</title>
+  <title>EGUI Font Matrix - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="HR说最迟今天给通知，于是现在还没给，我就认定二面没有通过了。 这次的技术方面感觉是没什么大问题的，虽然一面时并没有回答出面试官问的很多问题，但总体来说应对上是可以的，而且一面也在进行了整整1小时以后顺利通过了。 二面感觉更加倾向于HR面试。面试官似乎并不是太看重技术， &hellip;">
+  <meta name="description" content="Font Matrix是EGUI表示字体的一种形式。由于要减少对外部库的使用，没办法加载freetype这样的库来读取ttf，所以在EGUI内部直接用二进制点阵的方式保存字体。根据不同的字体大小，共有13个Font Matrix。 之前的写法是直接将13个Font Matrix作为C数组写在代码里 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/18/tencent-interview-summary">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/05/02/egui-font-matrix">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">Tencent Interview Summary</h1>
+      <h1 class="entry-title">EGUI Font Matrix</h1>
     
     
       <p class="meta">
@@ -85,22 +85,22 @@
   
 
 
-<time datetime="2014-04-18T20:55:15+08:00" pubdate data-updated="true">Apr 18<span>th</span>, 2014</time>
+<time datetime="2014-05-02T19:17:10+08:00" pubdate data-updated="true">May 2<span>nd</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>HR说最迟今天给通知，于是现在还没给，我就认定二面没有通过了。</p>
+<div class="entry-content"><p>Font Matrix是EGUI表示字体的一种形式。由于要减少对外部库的使用，没办法加载freetype这样的库来读取ttf，所以在EGUI内部直接用二进制点阵的方式保存字体。根据不同的字体大小，共有13个Font Matrix。</p>
 
-<p>这次的技术方面感觉是没什么大问题的，虽然一面时并没有回答出面试官问的很多问题，但总体来说应对上是可以的，而且一面也在进行了整整1小时以后顺利通过了。</p>
+<p>之前的写法是直接将13个Font Matrix作为C数组写在代码里，然后编译进二进制库（graph模块，所以是libgraph.so）。但这样会使得代码量显得非常大（超过70000行），而且编译耗时也很长。</p>
 
-<p>二面感觉更加倾向于HR面试。面试官似乎并不是太看重技术，而且对于我的回答也没有作出一个很懂技术的人应有的反应，甚至难以观察他是否满意。从HR的角度分析失败的原因，就十分明显了。我对有些HR问题的回答<strong>太过冗长、拐弯抹角</strong>，导致对方不耐烦，或者不明所以。比如对方问到我期望的工作城市，我根据第一反应解释了不想到北京、上海的原因，然后又转回，说从发展机会考虑还是选择北京或上海。这里明显能观察到对方的不满意。</p>
+<p>对这个部分的改进开始于commit 1118d03，具体做法是将编码Font Matrix的C数组全部作为二进制数据输出到<code>font_matrix_*.dat</code>里，然后在服务器端第一次显示文字时读取这些dat文件。这些数组的空间仍然在代码中进行了定义，所以这将近400k的数据会出现在二进制库的BSS段，并在加载时在内存中分配并清零，直到读取数据文件，其中才会出现数据。</p>
 
-<p>在二面没有通过的现在，再看最后问的那几个问题，也是很尴尬的。当时满心以为能够通过，于是问到对方所在部门，以及对工作压力的感觉，并陈述了我提出问题的原因：希望了解自己将来工作场所的情况。所以，总结是不应该当场假设通过。一面的时候问的技术问题也许还可以：腾讯内部使用的版本控制方法。</p>
+<p>另一种可能的写法是将数组变成指针，然后在读取文件前分配空间。这样可以为不需要字体的情况减少内存使用。</p>
 
-<p><em>Update 2014-04-24:</em> 腾讯二面并没有通过，不过现在好像又可能获得实习offer了，因为腾讯内部名额突然增加了。对方正在等待我的阿里面试结果。可以确定的是，腾讯二面中犯了一个致命错误。对方问到“Linux文件系统的结构”，我给出的回答是关于ext文件系统的内部结构，比如ext怎样避免异常中断造成的数据不一致，以及怎样减少碎片数量等。后来了解到，这个问题实际是关于“filesystem”的问题，也就是Linux系统的<strong>目录</strong>结构。我的回答完全跟问题不着边际。</p>
+<p>消去之后的代码量为45507行，通过<code>find . \( -name '*.c' -o -name '*.h' \) -exec cat {} \; | wc -l</code>命令统计。当然，代码量什么的只是自我满足而已。</p>
 </div>
 
 
@@ -123,7 +123,7 @@
   
 
 
-<time datetime="2014-04-18T20:55:15+08:00" pubdate data-updated="true">Apr 18<span>th</span>, 2014</time>
+<time datetime="2014-05-02T19:17:10+08:00" pubdate data-updated="true">May 2<span>nd</span>, 2014</time>
       
 
 
@@ -131,7 +131,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/18/tencent-interview-summary/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/18/tencent-interview-summary/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/05/02/egui-font-matrix/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/05/02/egui-font-matrix/" >Tweet</a>
   
   
   
@@ -140,10 +140,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/" title="Previous Post: Details of framebuffer-drawing process in EGUI">&laquo; Details of framebuffer-drawing process in EGUI</a>
+        <a class="basic-alignment left" href="/blog/2014/04/28/recent-bugfixes-in-egui/" title="Previous Post: Recent bugfixes in EGUI">&laquo; Recent bugfixes in EGUI</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/04/19/egui-bugfix-in-0eb4856/" title="Next Post: EGUI Bugfix in 0eb4856">EGUI Bugfix in 0eb4856 &raquo;</a>
       
     </p>
   </footer>
