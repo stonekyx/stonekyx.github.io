@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-05-02T19:49:01+08:00</updated>
+  <updated>2014-05-14T14:10:36+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Reply to a Postcard]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/05/14/reply-to-a-postcard/"/>
+    <updated>2014-05-14T13:23:17+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/05/14/reply-to-a-postcard</id>
+    <content type="html"><![CDATA[<p>某天傍晚去上课，在路上两小时内连续遇到大二的组长三次。最后一次是从食堂出来的时候，然后突然被赠送了一袋礼物。回寝室后发现是很喜欢的食物。</p>
+
+<p>今天发现袋中还有张明信片，写得很满，大概是对半年来的收获表示感谢。这是第一次收到这么长的明信片，而且还是表示感谢的。即便是过去的同学从国外寄回的明信片，也没有让我印象这么深刻。</p>
+
+<p>我虽然在这一年里确实有过自己很了不起的感觉，但也知道这样想是不对的。事实上，过去每当我抱有这种心态，就会在不久之后遇到重大的失败，所以一直对这种心态有反射性的危险感。理性地总结，我在EGUI上所做的事不过是“尽责”而已。出于对将来的考虑、项目对我的锻炼价值、和时间上的安排，我能做的也只是尽责。即便如此，我对EGUI的一点点贡献还是先后被赖老师和新入组员肯定，也许就算知道不应该，我还是会为自己感到一点自豪。</p>
+
+<p>其实在4月经历多次面试的挫折之后，我已经慢慢发现自己的诸多不足了，也明显地感觉到，当年无知的同学正在以无法追赶的速度超过我，就像高中的那些同学一样。龟兔赛跑中，兔子只要追赶就不会败给乌龟，而实际上拼命向前跑的兔子满大街都是。看到这副情景，想必我将来还会继续经历一个人的挣扎吧。在那挣扎的途中，如果还能有意无意地帮助一些人，希望这张明信片会是我前进的动力。</p>
+
+<p>现在模糊地想到无数句动漫台词&hellip;可惜我还不能很好地表达出来。</p>
+
+<p>最後のあの言葉がきっと、これからも僕の心を灯しつづけます。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[EGUI Font Matrix]]></title>
@@ -1541,28 +1560,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   </div>
 </body>
 </html>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Median 中位数]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/03/01/median/"/>
-    <updated>2014-03-01T19:23:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/03/01/median</id>
-    <content type="html"><![CDATA[<p>在Leetcode上遇到了百度质量部电话面试的题，求两个有序数组的中位数。时间复杂度要求是<code>O(log(n+m))</code>，虽然过了之后感觉复杂度是<code>O(logn+logm)</code>。</p>
-
-<p>这个题的关键是用常数时间判断两个数组中任意元素是否为中位数，以及不是的话，中位数在它的哪一边。但更重要的是另一个问题。</p>
-
-<div>
-  <pre><code class='java'>Integer left = findLeft(A,B);
-    if(left==null) left = findLeft(B,A);
-    Integer right = findRight(A,B);
-    if(right==null) right = findRight(B,A);
-    return (left+right)/2.0;</code></pre>
-</div>
-
-
-<p>主函数中的过程。关键问题是findLeft和findRight两个函数。之前求中位数往往会考虑个数为奇数和偶数的情况，但是如果考虑中位数总是有两个，只是它们可能重合，就能统一起这两种情况。这两个中位数在有序数列中，<strong>一个是前面有<code>(tot_length)/2</code>个元素，另一个是后面有这么多个元素。</strong>对于奇数个元素的情况，它们是重合的，<code>(a+b)/2=a=b</code>；对于偶数个情况，它们正好相邻，而答案也是<code>(a+b)/2</code>。</p>
 ]]></content>
   </entry>
   
