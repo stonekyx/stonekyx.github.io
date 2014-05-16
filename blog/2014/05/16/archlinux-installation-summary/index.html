@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>EGUI Bugfix in 0eb4856 - Stone's blog on Github Pages</title>
+  <title>ArchLinux Installation Summary - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序multi_windows，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。 在现在的master分支里直接revert &hellip;">
+  <meta name="description" content="用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。 首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">EGUI Bugfix in 0eb4856</h1>
+      <h1 class="entry-title">ArchLinux Installation Summary</h1>
     
     
       <p class="meta">
@@ -85,45 +85,34 @@
   
 
 
-<time datetime="2014-04-19T18:51:56+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
+<time datetime="2014-05-16T19:11:29+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>在commit 0eb4856里解决了一个很明显的服务器崩溃bug。这个bug的发生过程如下：启动服务器，然后启动客户端程序<code>multi_windows</code>，待窗口出现以后，在窗口外面的黑色空白处单击鼠标左键，此时服务器会崩溃。</p>
+<div class="entry-content"><p>用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。</p>
 
-<p>在现在的master分支里直接revert 0eb4856是不能再现这个问题的，因为该commit修改了一些其他的代码，而那些代码的API已经发生变化。要再现这个bug，可以在<a href="/attach/0eb4856-revert.patch">这里</a>下载反转patch，在commit 5debfbce的EGUI根目录应用之后即可。初学者想练习gdb的话，建议先不看下面的内容和patch文件的内容，自己找出这个bug。</p>
+<p>首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。</p>
 
-<hr />
+<p>遇到的第一个问题是grub安装报错。其实这里有两种错误，首先是在chroot环境里特有的<code>/run/lvm/lvmetad.socket</code>不存在的问题，ArchWiki上说可以忽略。另外，最后还提示说无法嵌入grub的数据。这是GPT缺少BIOS引导分区的问题，需要在34-2047扇区建立空的引导分区，类型编号为<code>ef02</code>。</p>
 
-<p>万一以上patch无效，或者不想使用patch，则需要在<code>window_manager/window_manager_input_handler.c</code>里找到<code>mask_active_by_mouse_down</code>函数，并将以下代码注释掉：</p>
+<p>引导成功以后，进入登录界面时屏幕卡死，并渐渐变暗。推测是AMD显卡驱动的问题。粗看了一下ArchWiki，把<code>radeon</code>加入到mkinitcpio.conf的MODULES部分，重建并引导以后屏幕直接被关闭，系统卡死。为了节约时间，直接在ISO环境里安装了xorg和GNOME，并在客户系统里用systemctl启用<code>gdm</code>。考虑到xorg带有xf86-video的显示驱动，至少应该能正常引导到图形界面。果然，重启后黑屏，然后恢复，并进入了图形界面。</p>
 
-<div>
-  <pre><code class='cpp'>if(!all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position)) {
-    /* Clear useless pointers in tainted iter */
-    window_info_iterator_clear(&amp;iter);
-}</code></pre>
-</div>
+<p>然后是GNOME里打不开<code>gnome-terminal</code>的问题。在控制台下配置好<code>DISPLAY</code>环境变量运行，提示DBus相关的错误（好像是<code>org.??</code>加载失败）。后来配置了<code>/etc/locale-gen.conf</code>并生成locale之后正常打开。</p>
 
+<p>GNOME安装过程中几次卡死，重启后重新安装，又多次出错，几次反复后成功。中间有一次<code>ldconfig</code>提示说某些<code>.so</code>文件为空，估计是文件系统recover journal的时候将它们重置了。</p>
 
-<p>并加上一行：</p>
+<p>最后是ibus。安装完ibus和ibus-sunpinyin之后，直接运行是无法输入中文的，因为还需要在<code>.xprofile</code>里设置环境变量：</p>
 
-<div>
-  <pre><code class='cpp'>all_app_traversal_decrement(&amp;iter, _do_find_clicked_window, &amp;msg-&gt;mouse.cursor_position);</code></pre>
-</div>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export XMODIFIERS="@im=ibus"
+</span><span class='line'>export GTK_IM_MODULE="ibus"
+</span><span class='line'>export QT_IM_MODULE="ibus"</span></code></pre></td></tr></table></div></figure>
 
-
-<p>再编译后即可。</p>
-
-<hr />
-
-<p>简单来说，这个bug的原因就是在函数调用失败之后，没有检查错误的返回值，也没有重置失败调用所产生的无效迭代器。其实这也可以说是一个设计缺陷，因为只要后面检查无效迭代器的代码直接依赖这个未clear的值就好了，可惜它依赖的是另外一个值。</p>
-
-<p>这个未重置的值会导致将来在对vector结构操作的时候给出-1的下标，于是就把某个别的指针给覆盖掉了。此后在使用那个指针的时候，会出现无效地址。</p>
-
-<p>那个被覆盖掉的指针是<code>global_wm.application_info_vector.head-&gt;data</code>，不过调试的时候在崩溃地点发现的指针应该不是这个名字，因为那是在一个复杂的迭代函数里。</p>
 </div>
 
 
@@ -146,7 +135,7 @@
   
 
 
-<time datetime="2014-04-19T18:51:56+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
+<time datetime="2014-05-16T19:11:29+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
       
 
 
@@ -154,7 +143,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/19/egui-bugfix-in-0eb4856/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary/" >Tweet</a>
   
   
   
@@ -163,10 +152,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/04/18/tencent-interview-summary/" title="Previous Post: Tencent Interview Summary">&laquo; Tencent Interview Summary</a>
+        <a class="basic-alignment left" href="/blog/2014/05/14/reply-to-a-postcard/" title="Previous Post: Reply to a postcard">&laquo; Reply to a postcard</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/04/22/slideshow-program-requirements-description/" title="Next Post: Slideshow program requirements description">Slideshow program requirements description &raquo;</a>
       
     </p>
   </footer>

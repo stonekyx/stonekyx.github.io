@@ -9,7 +9,7 @@
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="某天傍晚去上课，在路上两小时内连续遇到大二的组长三次。最后一次是从食堂出来的时候，然后突然被赠送了一袋礼物。回寝室后发现是很喜欢的食物。 今天发现袋中还有张明信片，写得很满，大概是对半年来的收获表示感谢。这是第一次收到这么长的明信片，而且还是表示感谢的。即便是过去的同学从国外寄回的明信片， &hellip;">
+  <meta name="description" content="用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。 首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,66 @@
   <div id="main">
     <div id="content">
       <div class="blog-index">
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/16/archlinux-installation-summary/">ArchLinux Installation Summary</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-16T19:11:29+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。</p>
+
+<p>首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。</p>
+
+<p>遇到的第一个问题是grub安装报错。其实这里有两种错误，首先是在chroot环境里特有的<code>/run/lvm/lvmetad.socket</code>不存在的问题，ArchWiki上说可以忽略。另外，最后还提示说无法嵌入grub的数据。这是GPT缺少BIOS引导分区的问题，需要在34-2047扇区建立空的引导分区，类型编号为<code>ef02</code>。</p>
+
+<p>引导成功以后，进入登录界面时屏幕卡死，并渐渐变暗。推测是AMD显卡驱动的问题。粗看了一下ArchWiki，把<code>radeon</code>加入到mkinitcpio.conf的MODULES部分，重建并引导以后屏幕直接被关闭，系统卡死。为了节约时间，直接在ISO环境里安装了xorg和GNOME，并在客户系统里用systemctl启用<code>gdm</code>。考虑到xorg带有xf86-video的显示驱动，至少应该能正常引导到图形界面。果然，重启后黑屏，然后恢复，并进入了图形界面。</p>
+
+<p>然后是GNOME里打不开<code>gnome-terminal</code>的问题。在控制台下配置好<code>DISPLAY</code>环境变量运行，提示DBus相关的错误（好像是<code>org.??</code>加载失败）。后来配置了<code>/etc/locale-gen.conf</code>并生成locale之后正常打开。</p>
+
+<p>GNOME安装过程中几次卡死，重启后重新安装，又多次出错，几次反复后成功。中间有一次<code>ldconfig</code>提示说某些<code>.so</code>文件为空，估计是文件系统recover journal的时候将它们重置了。</p>
+
+<p>最后是ibus。安装完ibus和ibus-sunpinyin之后，直接运行是无法输入中文的，因为还需要在<code>.xprofile</code>里设置环境变量：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export XMODIFIERS="@im=ibus"
+</span><span class='line'>export GTK_IM_MODULE="ibus"
+</span><span class='line'>export QT_IM_MODULE="ibus"</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+      
+    </article>
   
   
   
@@ -658,71 +718,6 @@ bresenham_for_each(pos, it, x1, y1, x2, y2) {
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/17/details-of-framebuffer-drawing-process-in-egui/">Details of Framebuffer-drawing Process in EGUI</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-17T19:52:52+08:00" pubdate data-updated="true">Apr 17<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>多分辨率支持问题的解决</h2>
-
-<p>在一年前，EGUI是不能支持<code>1366*768</code>像素分辨率的。实际上，当时的组长要求在运行时通过内核参数将tty的分辨率设置为<code>1024*768</code>。当时的例会上有人说过正在研究怎么解决这个问题，但好像没有下文，所以后来我就自己尝试将它解决了。</p>
-
-<p>实际上解决问题的那个commit是9ed112e，但由于当时git使用不熟，现在在<code>screen_set_pixel.c</code>里blame的话可能是比较难找到这个commit的，因为它被revert过两次。</p>
-
-<p>正如commit message里所说，这个问题的原因是fb里每一行的长度（以字节为单位）并不等于<code>实际像素数*颜色深度位数/CHAR_BIT</code>。之前那种做法会导致每一行都有些数据被写到了fb里的未使用位置上，所以显示就错乱了。换句话说，实际上就是二维数组的第二维长度计算错误。</p>
-
-<p>好在那么长的一个函数里，只有一处需要这个行宽，所以直接改成<code>global_fix_screen_info.line_length</code>即可。</p>
-
-<h2><code>screen_set_pixel</code>等函数的可复用性提升</h2>
-
-<p>这个不能说做得很好，因为只是将一个大函数拆成几个小部分，再加几个省去参数的形式而已。</p>
-
-<p>这么做的目的是，在其他部分的开发中，发现<code>screen_set_pixel</code>只能往screen结构体里绘图实在是太可惜，因为有些时候没办法提供screen结构体（比如<code>screen_cpy_area</code>函数里），或者不需要重新检查边界（比如<code>engine_fill_polygon</code>里）。这种调用频繁的函数，能省下一点时间总是好的。</p>
-
-<p>现在<code>screen_set_pixel</code>已经被拆分成很多种调用方式了，没办法一一说明。这里只介绍一下命名规则。</p>
-
-<ul>
-<li><strong><code>_r</code></strong>: 不将绘制结果写到第一个参数给定的对象里，而是写到另外一个里。这样可以防止原始的屏幕数据被破坏，也省去了调用者备份原始数据的必要。</li>
-<li><strong><code>_nocheck</code></strong>: 跳过边界检查。一般的调用中都会执行一个矩形边界检查，如果在工作区域外的话就不绘制。但如果调用者已经一次性把所有的像素都检查完了，这里就不用再重复。</li>
-<li><strong><code>_raw</code></strong>: 将screen结构体替换成<code>void*</code>。当然这样的话就需要额外给定一些数据才行，包括screen的长度、宽度和色彩深度。</li>
-</ul>
-
-
-<p>上面这三种可以进行必要的组合。实际上各个版本不过是在互相调用而已，最终核心的代码在<code>screen_set_pixel_raw_r_nocheck</code>里。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -738,6 +733,10 @@ bresenham_for_each(pos, it, x1, y1, x2, y2) {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/16/archlinux-installation-summary/">ArchLinux Installation Summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/14/reply-to-a-postcard/">Reply to a Postcard</a>
       </li>
     
@@ -751,10 +750,6 @@ bresenham_for_each(pos, it, x1, y1, x2, y2) {
     
       <li class="post">
         <a href="/blog/2014/04/27/alibaba-interview-summary-ii/">Alibaba Interview Summary II</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/27/rare-loop-syntax-in-egui/">Rare Loop Syntax in EGUI</a>
       </li>
     
   </ul>
