@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Alibaba Interview Summary II - Stone's blog on Github Pages</title>
+  <title>Building Custom Kernels on ArchLinux - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="这次二面比较特别，因为是抱着不想过的想法进行的，所以很多地方十分不规矩。仅限于阿里这一次，以后还得按正常的来。 这次是三位面试官，其中两个HR，另外一个最后得知是部门的高管。 我在自我介绍的最后发了一通对一面的牢骚，并表明了我自己的观点。实际上这么说完后我就已经知道没法过了。HR一定已经给差评了。 &hellip;">
+  <meta name="description" content="虽然也可以用ArchWiki上说的那样使用ABS编译，但更加自由的方式是直接clone git.kernel.org上的代码。 当然还是直接用发行版提供的config文件，不过直接用的话编译可能会花整整一个下午。复制到代码树之后，先make localmodconfig，可以按照当前系统加载的模块 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/04/27/alibaba-interview-summary-ii">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/05/21/building-custom-kernels-on-archlinux">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">Alibaba Interview Summary II</h1>
+      <h1 class="entry-title">Building Custom Kernels on ArchLinux</h1>
     
     
       <p class="meta">
@@ -85,36 +85,22 @@
   
 
 
-<time datetime="2014-04-27T21:03:57+08:00" pubdate data-updated="true">Apr 27<span>th</span>, 2014</time>
+<time datetime="2014-05-21T20:07:46+08:00" pubdate data-updated="true">May 21<span>st</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>这次二面比较特别，因为是抱着不想过的想法进行的，所以很多地方十分不规矩。仅限于阿里这一次，以后还得按正常的来。</p>
+<div class="entry-content"><p>虽然也可以用ArchWiki上说的那样使用ABS编译，但更加自由的方式是直接clone git.kernel.org上的代码。</p>
 
-<hr />
+<p>当然还是直接用发行版提供的config文件，不过直接用的话编译可能会花整整一个下午。复制到代码树之后，先<code>make localmodconfig</code>，可以按照当前系统加载的模块，将不需要的模块都去掉。这样编译大概只需要十几分钟时间。当然，安装并启动之后会发现一些问题，不过应该都不太严重，比如无法挂载vfat之类。这个只要再启用fat文件系统支持，以及NLS里包括cp437、iso8859-1在内的一些IO编码即可。对于已经有可用内核的发行版来说，很容易解决。</p>
 
-<p>这次是三位面试官，其中两个HR，另外一个最后得知是部门的高管。</p>
+<p>编译之后，如果想尽快开始使用，那么不用照顾ArchLinux的系统策略也没关系，直接将bzImage复制到/boot，再<code>make modules_install</code>，然后使用mkinitcpio生成initramfs。顺便在这一步中，还可以用dkms和mkinitcpio.conf里的hooks来自动化编译第三方模块，比如nvidia。AUR上的nvidia-dkms和nvidia-hook直接拿来用就行。只是initramfs的文件名需要跟内核保持一致，比如vmlinuz-xxx和initramfs-xxx.img，这样才能被grub-mkconfig找到。</p>
 
-<p>我在自我介绍的最后发了一通对一面的牢骚，并表明了我自己的观点。实际上这么说完后我就已经知道没法过了。HR一定已经给差评了。最后还是那个高管要我别再纠结一面，才停下来。他后来又说明了一下一面考官的目的，虽然知道是对的，我也没什么心情听，就应付过去了。最后还被当小孩子看待了，对方说这次面的其实就是Linux下的C++开发。这种事情我听都没听说过。</p>
+<p>最后执行grub-mkconfig。不过这样生成之后，重启可能会发现找不到新的启动项，但其实它很可能就在ArchLinux with Advanced Options那一条里面。那里面有个子菜单。</p>
 
-<p>然后是Linux的一些问题。感觉对方也只是随便问了几个，而且是看我那么强调Linux，才放着算法部分不管，只随便考了几个简单的基础Linux题。首先是gcc的参数，我估计列了十几个，然后还忘了优化开关，对方提醒才补上。然后是gdb的基本用法，线程切换，栈状态，调用层切换等命令。</p>
-
-<p>然后是那些项目经验，随便问了一下cmus的东西，什么类型，代码有没有被对方接受什么的。这种问题怎样都无所谓。</p>
-
-<p>接下来问了一个网络编程的题，要求写出服务器的基本调用流程。忘了listen，被对方指出来了。还问了非阻塞方式，回答得比较含糊，然后被训了，说没做过就不要猜。于是老实闭嘴。包括接下来的共享内存、内存映射，虽然多少有些印象，还是说没做过好了。</p>
-
-<p>然后讨论了一下学习方法，我简单阐述之后，对方总结说我是一个<strong>实用主义者</strong>。这算是本次面试的唯一收获了，这个评价估计以后会要长期使用。我挺喜欢。</p>
-
-<p>说到自己有较强学习能力的时候，HR提出反对，说那是应对能力。那倒也是。不过我后来补充了高中系统学习算法的事例，好像HR也没说什么了。</p>
-
-<p>最后是HR的问题，家人什么的，对自己影响最大的人什么的。后面一个问题我说的是我自己，好像情绪比较激动。</p>
-
-<hr />
-
-<p>面试结束的时候也没有任何留恋，拿起水就走。这种公司怎样都无所谓，这是面完阿里之后的感觉。可能也是一面那个人让我印象太差了吧。</p>
+<p>如果之后发现需要增加新的模块，<code>modules_install</code>之后可能会丢失之前mkinitcpio时hook自动安装的模块。这时即便再mkinitcpio也没办法装上了，因为dkms判断已经安装。判断的机制还不太清楚，不过可以先用dkms命令卸除模块，再一次装上。</p>
 </div>
 
 
@@ -137,7 +123,7 @@
   
 
 
-<time datetime="2014-04-27T21:03:57+08:00" pubdate data-updated="true">Apr 27<span>th</span>, 2014</time>
+<time datetime="2014-05-21T20:07:46+08:00" pubdate data-updated="true">May 21<span>st</span>, 2014</time>
       
 
 
@@ -145,7 +131,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/04/27/alibaba-interview-summary-ii/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/04/27/alibaba-interview-summary-ii/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/05/21/building-custom-kernels-on-archlinux/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/05/21/building-custom-kernels-on-archlinux/" >Tweet</a>
   
   
   
@@ -154,10 +140,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/04/27/rare-loop-syntax-in-egui/" title="Previous Post: Rare loop syntax in EGUI">&laquo; Rare loop syntax in EGUI</a>
+        <a class="basic-alignment left" href="/blog/2014/05/16/archlinux-installation-summary/" title="Previous Post: ArchLinux Installation Summary">&laquo; ArchLinux Installation Summary</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/04/28/recent-bugfixes-in-egui/" title="Next Post: Recent bugfixes in EGUI">Recent bugfixes in EGUI &raquo;</a>
       
     </p>
   </footer>

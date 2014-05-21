@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-05-16T19:28:18+08:00</updated>
+  <updated>2014-05-21T20:23:55+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -12,6 +12,23 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Building Custom Kernels on ArchLinux]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/05/21/building-custom-kernels-on-archlinux/"/>
+    <updated>2014-05-21T20:07:46+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/05/21/building-custom-kernels-on-archlinux</id>
+    <content type="html"><![CDATA[<p>虽然也可以用ArchWiki上说的那样使用ABS编译，但更加自由的方式是直接clone git.kernel.org上的代码。</p>
+
+<p>当然还是直接用发行版提供的config文件，不过直接用的话编译可能会花整整一个下午。复制到代码树之后，先<code>make localmodconfig</code>，可以按照当前系统加载的模块，将不需要的模块都去掉。这样编译大概只需要十几分钟时间。当然，安装并启动之后会发现一些问题，不过应该都不太严重，比如无法挂载vfat之类。这个只要再启用fat文件系统支持，以及NLS里包括cp437、iso8859-1在内的一些IO编码即可。对于已经有可用内核的发行版来说，很容易解决。</p>
+
+<p>编译之后，如果想尽快开始使用，那么不用照顾ArchLinux的系统策略也没关系，直接将bzImage复制到/boot，再<code>make modules_install</code>，然后使用mkinitcpio生成initramfs。顺便在这一步中，还可以用dkms和mkinitcpio.conf里的hooks来自动化编译第三方模块，比如nvidia。AUR上的nvidia-dkms和nvidia-hook直接拿来用就行。只是initramfs的文件名需要跟内核保持一致，比如vmlinuz-xxx和initramfs-xxx.img，这样才能被grub-mkconfig找到。</p>
+
+<p>最后执行grub-mkconfig。不过这样生成之后，重启可能会发现找不到新的启动项，但其实它很可能就在ArchLinux with Advanced Options那一条里面。那里面有个子菜单。</p>
+
+<p>如果之后发现需要增加新的模块，<code>modules_install</code>之后可能会丢失之前mkinitcpio时hook自动安装的模块。这时即便再mkinitcpio也没办法装上了，因为dkms判断已经安装。判断的机制还不太清楚，不过可以先用dkms命令卸除模块，再一次装上。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ArchLinux Installation Summary]]></title>
@@ -979,41 +996,6 @@ si_t button_default_callback(addr_t self, addr_t msg)
   </div>
 </body>
 </html>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[EGUI模块结构]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/03/04/egui-modules/"/>
-    <updated>2014-03-04T22:17:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/03/04/egui-modules</id>
-    <content type="html"><![CDATA[<div class="mxgraph" style="position:relative;left:50%;overflow:hidden;width:592px;height:335px;margin-left:-296px;"><div style="width:1px;height:1px;overflow:hidden;">7Vtbj+o2EP41+9iKkHDZx7P00L5UqrQPbZ9WXmKCVSdGSVjY8+uPTWaCL4HlEpxIBQmJjInj+fx5/M0YnsJZuvs9J+vVnyKm/Gk4SHIWP4W/PQ2HgXwrw4bFtDBMpRC8ZGvTuBBZRhelYVsKbna2Jgl1DK8Lwl3r3ywuV2ANxs+Hhj8oS1bwnOlwXDUU5Sf2EdMl2fDyl71JtqnmlGBfg8qwG0DXEfT8CYYpdLgmmTGkH0KkhiGnBfthDnvJYFjwkHeRxzQ3TJxl/+m4hd/lFORCyBvVp3Q3o1xNA05Cddv8SGsNV04z49HHbgA4PgjfwNC3LIvF9i0lmYQ2d8CUt8uJlhcv2xUr6euaLFTLVlJG2paM85ngovIxnMnXfO6OCYb5QfOS7mznJf+oSGmZf6ppgdZngOuzusbLrcaJCGwrjQ7hqLIRgDipez5gIj8ALM0QRQ5EMX3fJBchczsC4chEYDr5FXzTMJjcCQLoQoOAfihXbAi8UsICpL7W8ECa6HggTW7BA0KChkdBczn0N87ezwDldudrLzpwfuI4n6j9olMyhGF3eEwdPBYiTb3QIHiGlQluDz26Hbhbx4yzfVQYFFIhOAAUW5Zykt0rQEZ2PMCopWHRCEYwaCFCgmjQwCDrNWcLUjKRXcUFhPd8Mpj++6QC9GGoiDihV20Q87mKCu0A0h0iSF8tKOwXx9U7xOXeW5LJo/ehuz+6akny4xUuRV6uRCIywr8frC90x8p/ZOtACp3q6l91pT5nckBak7qs2o7iVohNvof3sFZLkiuKGgxWozoJri44kV5mMAFjTrlc+x9mPtAEKjzjL8H2oROjF/aDt1QOwLd0QY832qTHGys3nRu/5TlRDuHX1uoLRcOAoN+RudOAqjw6iujU1+WH6vEHNtUQn0cwV4P0nWDAgAfB2iFYndbch2CRG79vIthEZ1hgMkzqFI1iDRl8E8UwYP2/OXbNzLq5LCxXbWrlFiuheCGcJaros5BToco2L2r3lZqOf4OGlMXxfqbb2LCt/TocNiT4WDXSZwttN9U43CIHMqxrWIIJJFhd4BK4yd2mZHwfxnwmN6GV74e4QDQMwmkDCGi7CYSwIcNVev0aHYuAXpvWYKLvQ8Q3VP5ISd6KMt8syo2s9/pCoDsI3GhpdHN/3+2o6NF3N4uRRxpLlrxJl2S9zw8A9Qr2DwA+qi0RVAmdZhFUCaRTIgiQM0QQzJAhgmDRPoT2MaEdDiCeWwM8Oo6xuQFb3789mXNjTM9oBpQyaAYYPmh2jGbB8DKaWTKvbZYFboX2JMsKmqSSFV/XCyyGfVkvcPkF/NfpBVh0z64jBw2hLa7PZdvQ7gg3r7bZZ5+M2Ofg9rgsgW19/2b6IV49pF/DJto3+tXFawwONmuupV/dccv0G057Rr+W99jjDDT4h5n6FwwEuhn7a28o2ONaVsPvEO6mnK4ILFjreczrpYrYPVq/ZV71ww1NAau2epKrRgwTV0zsY17PmFe3oOTpVOG8BQunao/1eumZghuHMY1st3h+afFoNDZlSNRQNr7bkYJ7RguWjkGJrN+KeQXFPU9wf6/cCVPQOxSgeE7mAxQ3NYeHdwxK6CSR/kDBxEQDBXaPjkGxU5W6FOADFPdYHopMXTPFSlBrb32A4qpFV1Z0whQ7CcYfWvoAxT2zRMHTLSiBFG1dgRI1gNIPVMbWntx0zHU3qlyoyjOxP+anWSxrMmJ7sMSkWFHV6emKyEHB779XZ2bn5V5NGh3G25tyXTS2ynWD+s8ql6r2kdWV01F7Kh5/gKavjn4E0sgSZwEOtf3VIS8Pfz6rQDz8GTD8/hM=</div></div>
-
-
-<script type="text/javascript" src="https://www.draw.io/embed.js"></script>
-
-
-<p>用数字标出了模块之间的依赖关系。
-Client side是用户端模块的集合，这三个模块对外的依赖关系就统一表示了，另外内部依赖关系也很紧密。除了<code>client_lib</code>以外基本上不能完全独立。<code>utils</code>也是，它们对外在被依赖上地位和机会基本一样，也就是说别的模块只要依赖了utils中的任意一个，那么依赖其他几个也是很自然的（这不是约束条件，只是经常出现的情况）。</p>
-
-<ol>
-<li><code>event</code>依赖<code>comm</code>，很明显的一个原因就是<code>event</code>里要产生基本的消息。消息类型是在<code>comm</code>里定义的。</li>
-<li><code>server_lib</code>依赖<code>comm</code>，这个更显然了，<code>server_lib</code>里面都是对<code>comm</code>里定义的消息的处理，比如针对不同的消息类型，调用不同的服务器端函数进行操作。</li>
-<li>Client side依赖<code>comm</code>，因为客户端要跟服务器通信，也是要靠消息的。<code>client_lib</code>就跟<code>server_lib</code>基本上一样，也是针对各种消息的处理，所以也是大量地依赖<code>comm</code>。</li>
-<li><code>comm</code>里有些处理需要用到消息队列，这时就会对<code>data_structures</code>产生依赖。</li>
-<li><code>graph</code>在绘制图形的时候，至少也需要用到<code>color</code>里定义的颜色结构体和透明处理函数。</li>
-<li>Client side里<code>widget</code>也经常用到队列之类的结构（<code>data_structures</code>），以及被客户端广泛需要的<code>color</code>。</li>
-<li><code>data_structures</code>里有鼠标指针结构，它会用到<code>color</code>，因为鼠标是彩色的。如果把<code>utils</code>看作一个模块的话，这就变成内部依赖了。</li>
-<li><code>config_parser</code>用来从统一格式的配置文件中读取参数。来自<code>data_structures</code>的vector被用来存储读入的配置项。</li>
-<li><code>application</code>会在接收到消息的时候向合适的<code>widget</code>转发，转发的方式就是通过<code>widget</code>的callback函数。</li>
-<li><code>application</code>的很多操作需要跟服务器通信。客户端跟服务器通信的方式就是通过<code>client_lib</code>里的函数。</li>
-<li>原因跟上面类似，<code>widget</code>要控制控件的绘制，而它本身没有绘图的权限，所以需要通过<code>client_lib</code>向服务器发出请求。</li>
-</ol>
-
-
-<p>总的来说，<code>utils</code>里的模块被依赖的几率应该是最高的，同时也不太依赖别的模块。</p>
-
-<p>另外还有两个特别的、用椭圆表示的模块，它们在编译后生成可执行文件，而不是库文件。<code>debug</code>里的代码生成若干客户端程序，<code>window_manager</code>生成一个大的服务器程序。</p>
 ]]></content>
   </entry>
   
