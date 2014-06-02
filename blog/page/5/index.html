@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Jekyll! - Stone's blog on Github Pages</title>
+  <title>Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="(function($) { var canvas = document.getElementById('test'); var ctx = canvas.getContext('2d'); ctx.beginPath(); for(var i=5; i&lt;canvas.width; i+= &hellip;">
+  <meta name="description" content="生成一个专用的密钥对，将私钥用paperkey处理之后打印出来，将加密后的文件上传到保密性低的私人空间，公开公钥或打印在私钥背面。 失效的标志是paperkey或者加密后的文件泄露给第二方。此时应该将未泄露的信息立即销毁，并用新的密钥对重新备份。
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/02/14/welcome-to-jekyll">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/page/5">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -64,12 +65,17 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article class="hentry" role="article">
+      <div class="blog-index">
   
+  
+  
+  
+    <article>
+      
+      
   <header>
     
-      <h1 class="entry-title">Jekyll!</h1>
+      <h1 class="entry-title"><a href="/blog/2014/02/14/backing-up-secret-files-with-gpg/">GPG加密备份密码文件</a></h1>
     
     
       <p class="meta">
@@ -85,93 +91,33 @@
   
 
 
-<time datetime="2014-02-14T08:48:00+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
+<time datetime="2014-02-14T00:00:00+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><div>
-  <pre><code class='javascript'>(function($) {
-    var canvas = document.getElementById('test');
-    var ctx = canvas.getContext('2d');
-    ctx.beginPath();
-    for(var i=5; i&lt;canvas.width; i+=5) {
-        ctx.moveTo(i,0);
-        ctx.lineTo(i,canvas.height);
-    }
-    for(var i=5; i&lt;canvas.height; i+=5) {
-        ctx.moveTo(0,i);
-        ctx.lineTo(canvas.width,i);
-    }
-    ctx.stroke();
-})(jQuery);
-#=&gt; Just keeping a record of how to highlight codes.</code></pre>
+  <div class="entry-content"><p>生成一个专用的密钥对，将私钥用paperkey处理之后打印出来，将加密后的文件上传到保密性低的私人空间，公开公钥或打印在私钥背面。</p>
+
+<p>失效的标志是paperkey或者加密后的文件泄露给第二方。此时应该将未泄露的信息立即销毁，并用新的密钥对重新备份。</p>
 </div>
-
-
-<h1>Javascript test</h1>
-
-<p><canvas id='test'></canvas></p>
-
-<script src='/js/vendor/jquery.min.js'></script>
-
-
-<script src='/js/jstest.js'></script>
-
-
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Stone Kang</span></span>
-
-      
-
-
-
-
-
-
-
-
   
 
 
-<time datetime="2014-02-14T08:48:00+08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time>
       
-
-
-    </p>
+    </article>
+  
+  
+  <div class="pagination">
     
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/02/14/welcome-to-jekyll/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/02/14/welcome-to-jekyll/" >Tweet</a>
-  
-  
-  
-</div>
-
+    <a href="/blog/archives">Blog Archives</a>
     
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2014/02/14/jekyll-from-android/" title="Previous Post: Jekyll from Android!">&laquo; Jekyll from Android!</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/02/15/itemlist/" title="Next Post: Item list app">Item list app &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
+    <a class="next" href="/blog/page/4/">Newer &rarr;</a>
+    
+  </div>
 </div>
-
 <aside class="sidebar">
   
     <section>
@@ -207,7 +153,6 @@
 
   
 </aside>
-
 
     </div>
   </div>

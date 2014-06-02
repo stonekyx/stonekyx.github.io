@@ -4,7 +4,7 @@
   <title><![CDATA[Stone's blog on Github Pages]]></title>
   <link href="http://stonekyx.github.io/atom.xml" rel="self"/>
   <link href="http://stonekyx.github.io/"/>
-  <updated>2014-05-21T20:23:55+08:00</updated>
+  <updated>2014-06-02T17:02:16+08:00</updated>
   <id>http://stonekyx.github.io/</id>
   <author>
     <name><![CDATA[Stone Kang]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Migrate ArchLinux From I686 to X86_64]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/06/02/migrate-archlinux-from-i686-to-x86-64/"/>
+    <updated>2014-06-02T16:46:57+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/06/02/migrate-archlinux-from-i686-to-x86-64</id>
+    <content type="html"><![CDATA[<p>用了5年之后才知道我的CPU居然支持64位，所以今天把系统转换到64位了。</p>
+
+<p>ArchWiki上有一篇<a href="https://wiki.archlinux.org/index.php/Migrating_Between_Architectures_Without_Reinstalling">指南</a>，不过上面说的方法有几个陷阱。首先升级，然后安装内核，重启之后会变成64位环境，不过所有的程序都是32位的。然后安装pacman，最后安装之前下好的所有64位软件包。</p>
+
+<p>关键问题就出在最后这两步之间。安装好pacman之后，能够运行的程序马上就只剩下pacman、bash和busybox了，实际上这时候已经不能正常启动，bash虽说能运行，实际上作用已经很小。所以最关键的一点就是，必须在这个时候利用当前内存里的几个进程和pacman来完成剩下的安装步骤。</p>
+
+<p>习惯比较好的话，可能会一直呆在普通用户模式下，然后用sudo来继续安装。但问题是sudo也用不了了！这个时候就已经被完全困住了，只能利用另外一个系统来恢复。用另一块硬盘上的32位系统启动，然后将pacman的root设置为损坏的系统，执行刚才安装pacman的那条指令：<code>pactree -l pacman | pacman -r /mnt/ext -b /var/lib/pacman -S -</code>。这样可以将刚才覆盖掉的pacman、glibc等重要的包还原成32位。再次启动原来的系统之后，吸取刚才的教训，直接用root登录到字符界面，然后再安装一次pacman。于是又有问题了。虽然之前早已经下好了所有64位对应的包，但没考虑到multilib的问题。再次执行最后那个全系统更新的时候，会发现还需要再下几个<code>lib32-*</code>的包。但是刚才没有执行dhcpcd，而且现在也执行不了了！所以又得重新来一次，恢复到32位，然后这次用root登录之后马上启动dhcpcd，登录好网络之后，再执行全系统安装。</p>
+
+<p>全系统安装最后需要执行两次，因为第一次会有很多包无法正常安装。</p>
+
+<p>然后系统终于能够启动了，这次是完整的64位环境。剩下的就是补上aur包，vim、mutt、cmus等自行编译的软件，以及firefox了。当然，像阿里安全控件这样的东西也是会继续浪费时间的。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Alipay Security Plugin in Linux]]></title>
+    <link href="http://stonekyx.github.io/blog/2014/06/02/alipay-security-plugin-in-linux/"/>
+    <updated>2014-06-02T16:13:59+08:00</updated>
+    <id>http://stonekyx.github.io/blog/2014/06/02/alipay-security-plugin-in-linux</id>
+    <content type="html"><![CDATA[<p>阿里的支付宝在登录或者支付的时候可能需要一个安全控件。虽然官方提供了控件的安装脚本和说明，但那个脚本里带的插件比较古老，依赖libpng12，而且脚本的流程很难让人相信，所以这个安装总是会花费我半个下午的时间。</p>
+
+<p>首先想办法从安装脚本中把封装的文件解出来。用脚本中的命令就可以，通过awk获得二进制数据的起始位置，然后用tail截取，并转到tar。这个过程如果直接用删除脚本中前面若干行的方法来替代，可能会出现tar解压失败的问题。可能是文本编辑器改动了二进制数据。</p>
+
+<p>第二次解压后会得到两个so文件，根据不同的架构，将对应文件放到~/.mozilla/plugins里即可。然后检查可用性，<code>ldd libaliedit64.so</code>，发现<code>libpng12.so.0</code>的依赖是not found。于是到<a href="http://www.libpng.org">libpng.org</a>上去找源码包，安装到/opt，并在/usr/lib下建立一个符号链接。</p>
+
+<p>这时候再次启动firefox，如果安装libpng12之前已经启动过一次，可能firefox已经将这个插件标记为不可用了，所以启动前先删除<code>~/.mozilla/firefox/&lt;profile&gt;/pluginreg.dat</code>，让它重建一次。最后在<code>about:plugins</code>页面里应该能看到。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Building Custom Kernels on ArchLinux]]></title>
@@ -505,497 +539,6 @@ bresenham_for_each(pos, it, x1, y1, x2, y2) {
 <p>在Monodevelop里创建的窗体项目一般是GTK的，虽然没有尝试过在GTK项目里添加WinForm窗体，但我想这样应该也没什么问题。总之创建了一个<strong>空项目</strong>，然后在WinForm里新建了一个Form1.cs，画了个窗体，保存。导入到Monodevelop里之后发现无法编译，原因是一些assembly没有引用。在Project菜单里有个Edit references，打开后选择System等相关的引用即可。</p>
 
 <p>运行的时候还有个问题，中文默认是无法显示的。我用的系统locale是<code>en_US.UTF-8</code>，虽然同是UTF-8，但如果不设成<code>zh_CN.UTF-8</code>就不行。这个也许跟VS项目的配置文件有关系，因为写了中文的这个项目是用VS创建的。但也可能是类似于gettext的问题，设置了中文文本，没有设置英文文本，不然同是UTF-8应该是兼容的才对。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Egui Client Message Dispatching]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/03/05/egui-client-message-dispatching/"/>
-    <updated>2014-03-05T00:00:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/03/05/egui-client-message-dispatching</id>
-    <content type="html"><![CDATA[<!DOCTYPE html>
-
-<html>
-<head>
-  <title>exec.c</title>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="http://stonekyx.github.io/css/docco.css" />
-</head>
-<body>
-  <div id="container">
-    <div id="background"></div>
-    
-      <ul id="jump_to">
-        <li>
-          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
-          <a class="small" href="javascript:void(0);">+</a>
-          <div id="jump_wrapper">
-          <div id="jump_page">
-            
-              
-              <a class="source" href="../egui-button-callback/">
-                button.c
-              </a>
-            
-              
-              <a class="source" href="../egui-client-message-dispatching/">
-                exec.c
-              </a>
-            
-          </div>
-        </li>
-      </ul>
-    
-    <ul class="sections">
-        
-          <li id="title">
-              <div class="annotation">
-                  <h1>exec.c</h1>
-              </div>
-          </li>
-        
-        
-        
-        <li id="section-1">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-1">&#182;</a>
-              </div>
-              <p>这部分代码摘自application/exec.c，是用户程序接收到服务器的消息时首先进行的过程。这里只摘取了处理鼠标按下的代码。调用顺序是从下往上，监听函数收到消息后分析消息类型，然后首先传给handle_mouse_press。请从那里开始读。</p>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>这是检查并处理具体控件的函数。如果控件位于鼠标下方，那么它就是要找的控件，于是处理并返回它的指针；不是的话就返回NULL。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> widget* do_dispatch_mouse_event_and_returns(
-        <span class="hljs-keyword">struct</span> widget* w, <span class="hljs-keyword">union</span> message* msg)
-{
-    <span class="hljs-keyword">struct</span> rectangle area;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>前面这几行是为了获得这个控件在屏幕上的坐标。除了窗口以外的控件都只保存与父控件的相对坐标，所以需要计算一下绝对坐标。因为鼠标位置是绝对坐标的。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(w-&gt;is_window == <span class="hljs-number">1</span>) {
-        area = w-&gt;area;
-    } <span class="hljs-keyword">else</span> {
-        widget_absolute_area(w, &amp;area);
-    }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p>这之后就只要判断一个点是否在矩形内部即可。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(msg-&gt;mouse.cursor_position.x &gt;= area.x 
-        &amp;&amp; msg-&gt;mouse.cursor_position.x &lt;= area.x + area.width - <span class="hljs-number">1</span> 
-        &amp;&amp; msg-&gt;mouse.cursor_position.y &gt;= area.y 
-        &amp;&amp; msg-&gt;mouse.cursor_position.y &lt;= area.y + area.height - <span class="hljs-number">1</span>) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-5">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
-              </div>
-              <p>这个控件就在鼠标下方，所以将消息传给它并返回。这个callback就是平常见到的控件里那个callback指针。如果用户程序改动了它，那么用户的函数就会被调用。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(w-&gt;callback != NULL) {
-            w-&gt;callback(w, msg);
-        }
-        application_update_keybd_focus(w);
-        <span class="hljs-keyword">return</span> w; 
-    }
-    <span class="hljs-keyword">return</span> NULL;
-}</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
-              <p>这个函数名字好长..而且单词还拼错了。它的作用是判断每个控件是否处于鼠标的下方。它需要两个参数，一个是函数指针，指向要对找到的控件进行处理的函数；另一个是事件消息。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> <span class="hljs-keyword">struct</span> widget* application_widgets_for_each_decreament(</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
-              </div>
-              <p>第一个参数的类型应该这样读：do_for_each_widget是个指针，指向函数，函数接收两个参数并返回<code>struct widget*</code>。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">struct</span> widget* (*do_for_each_widget)(
-            <span class="hljs-keyword">struct</span> widget*, <span class="hljs-keyword">union</span> message*),
-        <span class="hljs-keyword">union</span> message* msg)
-{
-    <span class="hljs-keyword">int</span> n, i;
-    <span class="hljs-keyword">struct</span> object *tree, *node;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>global_application保存整个用户程序的信息，它的window_vector成员包含所有窗口的指针（没记错的话）。于是n应该就是窗口的个数。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    n = vector_size(&amp;(global_application.window_vector));</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-9">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
-              </div>
-              <p>循环每个窗口。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span>(i = n - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; -- i) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-10">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
-              </div>
-              <p>取得窗口的指针。实际上它是一棵树，树的节点是窗口里的控件。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        tree = vector_at(&amp;(global_application.window_vector), i);</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-11">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
-              </div>
-              <p>在这棵控件树里，左节点是兄弟，右节点是真正的子节点，以此来用二叉树表示一个多叉树。不过实际的规则比这个还复杂，将来再说。node应该能理解成控件树的第一个节点。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        node = tree-&gt;rchild;
-        <span class="hljs-keyword">while</span>(node != NULL) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-12">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
-              </div>
-              <p>有控件的话就继续，将消息传递给控件树的节点。这次调用里收到的处理函数是do_dispatch_mouse_event_and_returns（见下面的handle_mouse_press）。它如果发现这个控件是要找的控件，就会返回它的指针，否则返回NULL。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>(do_for_each_widget(WIDGET_POINTER(node), msg)) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-13">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
-              </div>
-              <p>如果找到了那个控件，处理完之后就直接返回。这个不是就继续循环控件树。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> WIDGET_POINTER(node);
-            }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-14">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
-              </div>
-              <p>这个object_tree_iterator_decrement函数可以实现非递归地遍历这棵树，也就是返回node之后的下一个应该遍历的节点。在for循环里就相当于<code>i++</code>的作用。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            node = object_tree_iterator_decrement(tree, node);
-        }
-    }
-    <span class="hljs-keyword">return</span> NULL;
-}</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-15">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
-              </div>
-              <p>处理鼠标按下的事件。接收到监听函数传来的事件消息之后，它需要通过某种机制将消息发给合适的控件。对于鼠标按下这个事件，应该接收的控件是鼠标下方的那个。这就交给application_widgets_for_each_decreament处理了。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">static</span> si_t handle_mouse_press (<span class="hljs-keyword">union</span> message * msg)
-{
-    application_widgets_for_each_decreament(
-            do_dispatch_mouse_event_and_returns, msg);
-    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
-}</pre></div></div>
-            
-        </li>
-        
-    </ul>
-  </div>
-</body>
-</html>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Egui Button Callback]]></title>
-    <link href="http://stonekyx.github.io/blog/2014/03/05/egui-button-callback/"/>
-    <updated>2014-03-05T00:00:00+08:00</updated>
-    <id>http://stonekyx.github.io/blog/2014/03/05/egui-button-callback</id>
-    <content type="html"><![CDATA[<!DOCTYPE html>
-
-<html>
-<head>
-  <title>button.c</title>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="http://stonekyx.github.io/css/docco.css" />
-</head>
-<body>
-  <div id="container">
-    <div id="background"></div>
-    
-      <ul id="jump_to">
-        <li>
-          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
-          <a class="small" href="javascript:void(0);">+</a>
-          <div id="jump_wrapper">
-          <div id="jump_page">
-            
-              
-              <a class="source" href="../egui-button-callback/">
-                button.c
-              </a>
-            
-              
-              <a class="source" href="../egui-client-message-dispatching/">
-                exec.c
-              </a>
-            
-          </div>
-        </li>
-      </ul>
-    
-    <ul class="sections">
-        
-          <li id="title">
-              <div class="annotation">
-                  <h1>button.c</h1>
-              </div>
-          </li>
-        
-        
-        
-        <li id="section-1">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-1">&#182;</a>
-              </div>
-              <p>这部分代码摘自widget/button/button.c，是按钮控件的默认callback。它一般被application/exec.c里的过程调用。那边的代码可以通过右上角的Jump跳转过去。</p>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>这次要实现的事件处理功能，是在widget.c里写，这里改动不会太大。而且那边的写法也会跟这个不一样，因为那边要处理所有存在的消息，当然不能像这样用switch枚举。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>
-si_t button_default_callback(addr_t self, addr_t msg)
-{
-    <span class="hljs-keyword">struct</span> button * b = self;
-    <span class="hljs-keyword">union</span> message * m = msg;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>union message的base.type成员保存了消息的类型。按钮控件只处理了几种必要的消息，而没有考虑鼠标点击之类的事件，所以现在用户都需要自己重新实现一个callback函数来处理。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">switch</span>(m-&gt;base.type) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p>重绘事件。由于某种原因，这个控件所在位置的图形被扰乱了，需要重新绘制时出现的消息。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_WIDGET_REPAINT:
-            button_default_widget_repaint(b, m);
-            button_default_widget_show(b, m);
-            <span class="hljs-keyword">break</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-5">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
-              </div>
-              <p>申请服务器将图像显示出来。这个消息单独出现的情况好像比较少，一般都是重绘之后才需要申请服务器显示，而这个是上面的消息附带处理的。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_WIDGET_SHOW:
-            button_default_widget_show(b, m);
-            <span class="hljs-keyword">break</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
-              <p>鼠标按下。按下时按钮会改变外观，比如颜色变深，所以也需要重新显示。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_MOUSE_PRESS:
-            button_default_mouse_press(b, m);
-            button_default_widget_show(b, m);
-            <span class="hljs-keyword">break</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
-              </div>
-              <p>跟上面一样，松开时外观要恢复到按下前的样子。</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">case</span> MESSAGE_TYPE_MOUSE_RELEASE:
-            button_default_mouse_release(b, m);
-            button_default_widget_show(b, m);
-            <span class="hljs-keyword">break</span>;
-
-        <span class="hljs-keyword">default</span>:
-            <span class="hljs-keyword">break</span>;
-    }
-
-    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
-}</pre></div></div>
-            
-        </li>
-        
-    </ul>
-  </div>
-</body>
-</html>
 ]]></content>
   </entry>
   

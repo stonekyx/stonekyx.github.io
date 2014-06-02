@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ArchLinux Installation Summary - Stone's blog on Github Pages</title>
+  <title>Alipay Security Plugin in Linux - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。 首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。 &hellip;">
+  <meta name="description" content="阿里的支付宝在登录或者支付的时候可能需要一个安全控件。虽然官方提供了控件的安装脚本和说明，但那个脚本里带的插件比较古老，依赖libpng12，而且脚本的流程很难让人相信，所以这个安装总是会花费我半个下午的时间。 首先想办法从安装脚本中把封装的文件解出来。用脚本中的命令就可以， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/06/02/alipay-security-plugin-in-linux">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">ArchLinux Installation Summary</h1>
+      <h1 class="entry-title">Alipay Security Plugin in Linux</h1>
     
     
       <p class="meta">
@@ -85,34 +85,20 @@
   
 
 
-<time datetime="2014-05-16T19:11:29+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
+<time datetime="2014-06-02T16:13:59+08:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。</p>
+<div class="entry-content"><p>阿里的支付宝在登录或者支付的时候可能需要一个安全控件。虽然官方提供了控件的安装脚本和说明，但那个脚本里带的插件比较古老，依赖libpng12，而且脚本的流程很难让人相信，所以这个安装总是会花费我半个下午的时间。</p>
 
-<p>首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。</p>
+<p>首先想办法从安装脚本中把封装的文件解出来。用脚本中的命令就可以，通过awk获得二进制数据的起始位置，然后用tail截取，并转到tar。这个过程如果直接用删除脚本中前面若干行的方法来替代，可能会出现tar解压失败的问题。可能是文本编辑器改动了二进制数据。</p>
 
-<p>遇到的第一个问题是grub安装报错。其实这里有两种错误，首先是在chroot环境里特有的<code>/run/lvm/lvmetad.socket</code>不存在的问题，ArchWiki上说可以忽略。另外，最后还提示说无法嵌入grub的数据。这是GPT缺少BIOS引导分区的问题，需要在34-2047扇区建立空的引导分区，类型编号为<code>ef02</code>。</p>
+<p>第二次解压后会得到两个so文件，根据不同的架构，将对应文件放到~/.mozilla/plugins里即可。然后检查可用性，<code>ldd libaliedit64.so</code>，发现<code>libpng12.so.0</code>的依赖是not found。于是到<a href="http://www.libpng.org">libpng.org</a>上去找源码包，安装到/opt，并在/usr/lib下建立一个符号链接。</p>
 
-<p>引导成功以后，进入登录界面时屏幕卡死，并渐渐变暗。推测是AMD显卡驱动的问题。粗看了一下ArchWiki，把<code>radeon</code>加入到mkinitcpio.conf的MODULES部分，重建并引导以后屏幕直接被关闭，系统卡死。为了节约时间，直接在ISO环境里安装了xorg和GNOME，并在客户系统里用systemctl启用<code>gdm</code>。考虑到xorg带有xf86-video的显示驱动，至少应该能正常引导到图形界面。果然，重启后黑屏，然后恢复，并进入了图形界面。</p>
-
-<p>然后是GNOME里打不开<code>gnome-terminal</code>的问题。在控制台下配置好<code>DISPLAY</code>环境变量运行，提示DBus相关的错误（好像是<code>org.??</code>加载失败）。后来配置了<code>/etc/locale-gen.conf</code>并生成locale之后正常打开。</p>
-
-<p>GNOME安装过程中几次卡死，重启后重新安装，又多次出错，几次反复后成功。中间有一次<code>ldconfig</code>提示说某些<code>.so</code>文件为空，估计是文件系统recover journal的时候将它们重置了。</p>
-
-<p>最后是ibus。安装完ibus和ibus-sunpinyin之后，直接运行是无法输入中文的，因为还需要在<code>.xprofile</code>里设置环境变量：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>export XMODIFIERS="@im=ibus"
-</span><span class='line'>export GTK_IM_MODULE="ibus"
-</span><span class='line'>export QT_IM_MODULE="ibus"</span></code></pre></td></tr></table></div></figure>
-
+<p>这时候再次启动firefox，如果安装libpng12之前已经启动过一次，可能firefox已经将这个插件标记为不可用了，所以启动前先删除<code>~/.mozilla/firefox/&lt;profile&gt;/pluginreg.dat</code>，让它重建一次。最后在<code>about:plugins</code>页面里应该能看到。</p>
 </div>
 
 
@@ -135,7 +121,7 @@
   
 
 
-<time datetime="2014-05-16T19:11:29+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
+<time datetime="2014-06-02T16:13:59+08:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2014</time>
       
 
 
@@ -143,7 +129,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/06/02/alipay-security-plugin-in-linux/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/06/02/alipay-security-plugin-in-linux/" >Tweet</a>
   
   
   
@@ -152,10 +138,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/05/14/reply-to-a-postcard/" title="Previous Post: Reply to a postcard">&laquo; Reply to a postcard</a>
+        <a class="basic-alignment left" href="/blog/2014/05/21/building-custom-kernels-on-archlinux/" title="Previous Post: Building custom kernels on ArchLinux">&laquo; Building custom kernels on ArchLinux</a>
       
       
-        <a class="basic-alignment right" href="/blog/2014/05/21/building-custom-kernels-on-archlinux/" title="Next Post: Building custom kernels on ArchLinux">Building custom kernels on ArchLinux &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2014/06/02/migrate-archlinux-from-i686-to-x86-64/" title="Next Post: Migrate ArchLinux from i686 to x86_64">Migrate ArchLinux from i686 to x86_64 &raquo;</a>
       
     </p>
   </footer>

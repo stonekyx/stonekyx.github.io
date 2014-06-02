@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ArchLinux Installation Summary - Stone's blog on Github Pages</title>
+  <title>Migrate ArchLinux From I686 to X86_64 - Stone's blog on Github Pages</title>
   <meta name="author" content="Stone Kang">
 
   
-  <meta name="description" content="用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。 首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。 &hellip;">
+  <meta name="description" content="用了5年之后才知道我的CPU居然支持64位，所以今天把系统转换到64位了。 ArchWiki上有一篇指南，不过上面说的方法有几个陷阱。首先升级，然后安装内核，重启之后会变成64位环境，不过所有的程序都是32位的。然后安装pacman，最后安装之前下好的所有64位软件包。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary">
+  <link rel="canonical" href="http://stonekyx.github.io/blog/2014/06/02/migrate-archlinux-from-i686-to-x86-64">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Stone's blog on Github Pages" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">ArchLinux Installation Summary</h1>
+      <h1 class="entry-title">Migrate ArchLinux From I686 to X86_64</h1>
     
     
       <p class="meta">
@@ -85,34 +85,24 @@
   
 
 
-<time datetime="2014-05-16T19:11:29+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
+<time datetime="2014-06-02T16:46:57+08:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>用了一下午时间给一个学弟安装ArchLinux。系统环境是64位CPU，AMD显卡的笔记本电脑，安装在16G、USB 3.0的U盘里。要求安装GNOME，并配置中文输入法和字体。</p>
+<div class="entry-content"><p>用了5年之后才知道我的CPU居然支持64位，所以今天把系统转换到64位了。</p>
 
-<p>首先残念的是，U盘虽然是USB 3.0，也插在了USB 3.0的接口上，但速度显然还是很慢。可能是买得太便宜了。</p>
+<p>ArchWiki上有一篇<a href="https://wiki.archlinux.org/index.php/Migrating_Between_Architectures_Without_Reinstalling">指南</a>，不过上面说的方法有几个陷阱。首先升级，然后安装内核，重启之后会变成64位环境，不过所有的程序都是32位的。然后安装pacman，最后安装之前下好的所有64位软件包。</p>
 
-<p>遇到的第一个问题是grub安装报错。其实这里有两种错误，首先是在chroot环境里特有的<code>/run/lvm/lvmetad.socket</code>不存在的问题，ArchWiki上说可以忽略。另外，最后还提示说无法嵌入grub的数据。这是GPT缺少BIOS引导分区的问题，需要在34-2047扇区建立空的引导分区，类型编号为<code>ef02</code>。</p>
+<p>关键问题就出在最后这两步之间。安装好pacman之后，能够运行的程序马上就只剩下pacman、bash和busybox了，实际上这时候已经不能正常启动，bash虽说能运行，实际上作用已经很小。所以最关键的一点就是，必须在这个时候利用当前内存里的几个进程和pacman来完成剩下的安装步骤。</p>
 
-<p>引导成功以后，进入登录界面时屏幕卡死，并渐渐变暗。推测是AMD显卡驱动的问题。粗看了一下ArchWiki，把<code>radeon</code>加入到mkinitcpio.conf的MODULES部分，重建并引导以后屏幕直接被关闭，系统卡死。为了节约时间，直接在ISO环境里安装了xorg和GNOME，并在客户系统里用systemctl启用<code>gdm</code>。考虑到xorg带有xf86-video的显示驱动，至少应该能正常引导到图形界面。果然，重启后黑屏，然后恢复，并进入了图形界面。</p>
+<p>习惯比较好的话，可能会一直呆在普通用户模式下，然后用sudo来继续安装。但问题是sudo也用不了了！这个时候就已经被完全困住了，只能利用另外一个系统来恢复。用另一块硬盘上的32位系统启动，然后将pacman的root设置为损坏的系统，执行刚才安装pacman的那条指令：<code>pactree -l pacman | pacman -r /mnt/ext -b /var/lib/pacman -S -</code>。这样可以将刚才覆盖掉的pacman、glibc等重要的包还原成32位。再次启动原来的系统之后，吸取刚才的教训，直接用root登录到字符界面，然后再安装一次pacman。于是又有问题了。虽然之前早已经下好了所有64位对应的包，但没考虑到multilib的问题。再次执行最后那个全系统更新的时候，会发现还需要再下几个<code>lib32-*</code>的包。但是刚才没有执行dhcpcd，而且现在也执行不了了！所以又得重新来一次，恢复到32位，然后这次用root登录之后马上启动dhcpcd，登录好网络之后，再执行全系统安装。</p>
 
-<p>然后是GNOME里打不开<code>gnome-terminal</code>的问题。在控制台下配置好<code>DISPLAY</code>环境变量运行，提示DBus相关的错误（好像是<code>org.??</code>加载失败）。后来配置了<code>/etc/locale-gen.conf</code>并生成locale之后正常打开。</p>
+<p>全系统安装最后需要执行两次，因为第一次会有很多包无法正常安装。</p>
 
-<p>GNOME安装过程中几次卡死，重启后重新安装，又多次出错，几次反复后成功。中间有一次<code>ldconfig</code>提示说某些<code>.so</code>文件为空，估计是文件系统recover journal的时候将它们重置了。</p>
-
-<p>最后是ibus。安装完ibus和ibus-sunpinyin之后，直接运行是无法输入中文的，因为还需要在<code>.xprofile</code>里设置环境变量：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>export XMODIFIERS="@im=ibus"
-</span><span class='line'>export GTK_IM_MODULE="ibus"
-</span><span class='line'>export QT_IM_MODULE="ibus"</span></code></pre></td></tr></table></div></figure>
-
+<p>然后系统终于能够启动了，这次是完整的64位环境。剩下的就是补上aur包，vim、mutt、cmus等自行编译的软件，以及firefox了。当然，像阿里安全控件这样的东西也是会继续浪费时间的。</p>
 </div>
 
 
@@ -135,7 +125,7 @@
   
 
 
-<time datetime="2014-05-16T19:11:29+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
+<time datetime="2014-06-02T16:46:57+08:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2014</time>
       
 
 
@@ -143,7 +133,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/05/16/archlinux-installation-summary/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://stonekyx.github.io/blog/2014/06/02/migrate-archlinux-from-i686-to-x86-64/" data-via="" data-counturl="http://stonekyx.github.io/blog/2014/06/02/migrate-archlinux-from-i686-to-x86-64/" >Tweet</a>
   
   
   
@@ -152,10 +142,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/05/14/reply-to-a-postcard/" title="Previous Post: Reply to a postcard">&laquo; Reply to a postcard</a>
+        <a class="basic-alignment left" href="/blog/2014/06/02/alipay-security-plugin-in-linux/" title="Previous Post: Alipay Security Plugin in Linux">&laquo; Alipay Security Plugin in Linux</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/05/21/building-custom-kernels-on-archlinux/" title="Next Post: Building custom kernels on ArchLinux">Building custom kernels on ArchLinux &raquo;</a>
       
     </p>
   </footer>

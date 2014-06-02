@@ -74,6 +74,74 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/03/05/egui-client-message-dispatching/">Egui Client Message Dispatching</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+      
+    </article>
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/05/egui-button-callback/">Egui Button Callback</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-05T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+      
+    </article>
+  
+  
+  
+  
+    <article>
+      
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/03/04/egui-modules/">EGUI模块结构</a></h1>
     
     
@@ -490,126 +558,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     </article>
   
   
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/24/rip-audio-cd-from-linux-cli/">Rip Audio CD</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-24T05:09:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>买了CLICK和apple symphony之后是第一次在Linux命令行下Rip，因为想采用尽可能原始和准确的方法，所以稍微绕得有点复杂。</p>
-
-<p>首先，使用的主要工具是cdrdao。用cdrdao的<code>read-cd</code>命令，可以得到一对bin/toc文件。bin是原始的音频数据，toc是相当于cue的东西，可以用toc2cue转换到cue。cdrdao的命令具体是：<code>cdrdao read-cd data.toc</code>。第二个参数是toc文件的名字，虽然需要指定这个文件名，但bin文件却可以缺省，不知道为什么。</p>
-
-<p>之后是缓慢的读取过程。其实随时间增加好像有变快的趋势。</p>
-
-<p>读取完之后，<code>file data.bin</code>会发现返回的文件类型是<code>data</code>，不可识别。因为它没有wav的文件头。实际上，这时用<code>aplay -f cdr</code>才可以播放，所以可以推测出这个文件是big endian的。我的习惯是要把CD切成单曲，所以接下来要用bchunk。bchunk有个参数<code>-s</code>可以交换字节序，所以这个时候就要用到它了，不然切出来就会变成杂音。具体指令是<code>bchunk -ws data.bin data.cue data-</code>。</p>
-
-<p>切出来之后，连文件头也已经加好了，是WAV文件。所以接下来是<code>flac data-*.wav</code>。</p>
-
-<p>如果不需要音轨信息，就可以结束了。但那显然不可能。用CD获取音轨信息最好的工具是Musicbrainz的官方工具picard。遗憾的是，这是一个图形化界面的工具。先导入所有的flac文件，然后查询CD信息，获取结束之后将flac一首首拖到CD的音轨信息上去，最后保存即可。</p>
-
-<p>如果CD比较高级，自带有音轨信息，那么可以用cdda2wav来读取。<code>cdda2wav -J -g -D /dev/sr0</code>。</p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
-  
-  
-    <article>
-      
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/23/opening-report-click/">开箱报告</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-23T23:07:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>这次买了两张CD，ClariS的CLICK和竹達彩奈的apple symphony。快递比较坑，到了之后还延迟了三天才送货。不过很不幸，手一滑给了揽货员一个差评。晚上再补派货员的。</p>
-
-<p>第一张照例是开箱。萌购的习惯就是拿报纸来填充，所以最上面一张总是报纸。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713437764/" title="IMG_20140223_125147 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm8.staticflickr.com/7441/12713437764_5842e97423_c.jpg" width="800" height="600" alt="IMG_20140223_125147"></a></p>
-
-<p>里面一层也和以往一样，是塑料的充气袋。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713439594/" title="IMG_20140223_125247 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm6.staticflickr.com/5544/12713439594_609bf18a11_c.jpg" width="800" height="600" alt="IMG_20140223_125247"></a></p>
-
-<p>萌购的可脱标签在两张CD上都有。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713440584/" title="IMG_20140223_125507 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm8.staticflickr.com/7295/12713440584_63573cd8fb_c.jpg" width="800" height="600" alt="IMG_20140223_125507"></a></p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713441944/" title="IMG_20140223_125529 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm4.staticflickr.com/3777/12713441944_14ff4584f8_c.jpg" width="800" height="600" alt="IMG_20140223_125529"></a></p>
-
-<p>apple symphony的包装袋是只能破坏的，所以打开之后就没法再装回去了。不知道是不是跟通常盘有关。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12712991465/" title="IMG_20140223_125629 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm4.staticflickr.com/3751/12712991465_2cf95715e3_c.jpg" width="800" height="600" alt="IMG_20140223_125629"></a></p>
-
-<p>CLICK是期间限定生产盘，14年5月末截止。袋子上有CD的标签，看来这个袋子不是萌购套上的，应该是买来就有。袋子是封条式的，可以重复使用。但由于是单曲，所以CD盒是纸盒（CD托盘当然还是塑料），而且歌词只有一张纸。这是头一次买单曲CD。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12712992125/" title="IMG_20140223_125646 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm8.staticflickr.com/7314/12712992125_917596bfd6_c.jpg" width="800" height="600" alt="IMG_20140223_125646"></a></p>
-
-<p>apple symphony毕竟是album，尽管是通常盘，还是比较正式一些，有厚厚的一册歌词，跟其他专辑一样。apple symphony还有一种特别版，非常贵，但是当然特典也很多。这次还是望而却步了。</p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12712992685/" title="IMG_20140223_130053 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm6.staticflickr.com/5539/12712992685_740b523961_c.jpg" width="800" height="600" alt="IMG_20140223_130053"></a></p>
-
-<p><a href="http://www.flickr.com/photos/47575131@N06/12713158703/" title="IMG_20140223_130101 by Stone Kang, on Flickr"><img class="lazy" src="" data-src="https://farm6.staticflickr.com/5523/12713158703_af32635672_c.jpg" width="800" height="600" alt="IMG_20140223_130101"></a></p>
-</div>
-  
-  
-
-
-      
-    </article>
-  
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -627,6 +575,14 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/06/02/migrate-archlinux-from-i686-to-x86-64/">Migrate ArchLinux From I686 to X86_64</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/02/alipay-security-plugin-in-linux/">Alipay Security Plugin in Linux</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/21/building-custom-kernels-on-archlinux/">Building Custom Kernels on ArchLinux</a>
       </li>
     
@@ -636,14 +592,6 @@ Client side是用户端模块的集合，这三个模块对外的依赖关系就
     
       <li class="post">
         <a href="/blog/2014/05/14/reply-to-a-postcard/">Reply to a Postcard</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/02/egui-font-matrix/">EGUI Font Matrix</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/28/recent-bugfixes-in-egui/">Recent Bugfixes in EGUI</a>
       </li>
     
   </ul>
